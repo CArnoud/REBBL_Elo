@@ -1,4 +1,6 @@
-const fs = require('fs');
+const fileHelper = require('./utils/fileHelper.js');
+
+const seasonNames = require('./utils/rebbl').seasonNames;
 
 const normElo = 1000;
 //const stretchingFactor = 2 * Math.sqrt(numberOfTeams);
@@ -8,28 +10,12 @@ const maxEloChange = 100;
 const numberOfSeasons = 1;
 let elo = {};
 
-const seasonNames = {
-    REL: [
-        'season 1',
-        'season 2',
-        'season 3',
-        'season 4',
-        'season 5',
-        'season 6',
-        'season 7',
-        'season 8',
-        'season 9',
-        'season 10',
-        'season 11'
-    ]
-};
-
 function readFile(seasonName, fileName) {
-    return JSON.parse(fs.readFileSync('files/' + seasonName + '/' + fileName));
+    return JSON.parse(fileHelper.readFile('files/' + seasonName + '/' + fileName));
 }
 
 function readSeason(seasonName) {
-    const fileNames = fs.readdirSync('files/' + seasonName);
+    const fileNames = fileHelper.readDir('files/' + seasonName);
     const results = [];
     for (let i = 0; i < fileNames.length; i++) {
         results.push(readFile(seasonName, fileNames[i]));
@@ -95,8 +81,8 @@ function updateEloForSeason(season) {
     }
 }
 
-for (let i = 0; i < seasonNames.REL.length && i < numberOfSeasons; i++) {
-    const results = readSeason(seasonNames.REL[i]);
+for (let i = 0; i < seasonNames.length && i < numberOfSeasons; i++) {
+    const results = readSeason(seasonNames[i]);
 
     for (let j=0; j < results.length; j++) {
         updateEloForSeason(results[j]);
@@ -115,3 +101,5 @@ for (let i in elo) {
 
 // console.log('sum ' + sum);
 // console.log('avg ' + (sum / eloList.length));
+
+fileHelper.writeFile('files/elo/elo.json', JSON.stringify(elo));
