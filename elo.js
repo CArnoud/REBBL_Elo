@@ -1,11 +1,6 @@
 const fileHelper = require('./utils/fileHelper.js');
-
 const seasonNames = require('./utils/rebbl').seasonNames;
-
-const normElo = 1000;
-//const stretchingFactor = 2 * Math.sqrt(numberOfTeams);
-const stretchingFactor = 2000;
-const maxEloChange = 100;
+const config = require('./utils/config');
 
 const numberOfSeasons = 1;
 let elo = {};
@@ -25,7 +20,7 @@ function readSeason(seasonName) {
 }
 
 function calculateOdds(team_elo, opponent_elo) {
-    return Math.pow(10,((team_elo - opponent_elo)/stretchingFactor));
+    return Math.pow(10,((team_elo - opponent_elo)/config.ELO.stretchingFactor));
 }
 
 function getExpectedResult(team_elo, opponent_elo) {
@@ -35,16 +30,16 @@ function getExpectedResult(team_elo, opponent_elo) {
 }
 
 function getUpdatedElo(previous_elo, expected_result, actual_result) {
-    return previous_elo + maxEloChange * (actual_result - expected_result);
+    return previous_elo + config.ELO.maxChange * (actual_result - expected_result);
 }
 
 function updateEloForGame(game) {
     const team1 = game.team_ids[0];
-    let team1Mmr = elo[team1] ? elo[team1] : normElo;
+    let team1Mmr = elo[team1] ? elo[team1] : config.ELO.norm;
     let team1Result = 0.5;
 
     const team2 = game.team_ids[1];
-    let team2Mmr = elo[team2] ? elo[team2] : normElo;
+    let team2Mmr = elo[team2] ? elo[team2] : config.ELO.norm;
     let team2Result = 0.5;
 
     const winner = game.winner_id;

@@ -1,4 +1,10 @@
 const REBBL = {
+    api: {
+        host: 'https://rebbl.net/api/v2'
+    },
+    leagueNames: {
+        REL: 'REBBL%20-%20REL'
+    },
     seasonNames: [
         'season 1',
         'season 2',
