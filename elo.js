@@ -5,7 +5,7 @@ const config = require('./utils/config');
 const numberOfSeasons = 1;
 let elo = {};
 
-function readFile(seasonName, fileName) {
+function readDivision(seasonName, fileName) {
     return JSON.parse(fileHelper.readFile('files/' + seasonName + '/' + fileName));
 }
 
@@ -13,7 +13,7 @@ function readSeason(seasonName) {
     const fileNames = fileHelper.readDir('files/' + seasonName);
     const results = [];
     for (let i = 0; i < fileNames.length; i++) {
-        results.push(readFile(seasonName, fileNames[i]));
+        results.push(readDivision(seasonName, fileNames[i]));
     }
 
     return results;
@@ -24,8 +24,8 @@ function calculateOdds(team_elo, opponent_elo) {
 }
 
 function getExpectedResult(team_elo, opponent_elo) {
-    R1 = calculateOdds(team_elo, opponent_elo);
-    R2 = calculateOdds(opponent_elo, team_elo);
+    const R1 = calculateOdds(team_elo, opponent_elo);
+    const R2 = calculateOdds(opponent_elo, team_elo);
     return R1 / (R1 + R2);
 }
 
@@ -64,23 +64,15 @@ function updateEloForGame(game) {
     //     '-> ' + elo[team1] + ',' + elo[team2]);
 }
 
-function updateEloForRound(round) {
-    for (let i = 0; i < round.length; i++) {
-        updateEloForGame(round[i]);
-    }
-}
-
-function updateEloForSeason(season) {
-    for (let i = 0; i < season.length; i++) {
-        updateEloForRound(season[i]);
-    }
-}
-
 for (let i = 0; i < seasonNames.length && i < numberOfSeasons; i++) {
     const results = readSeason(seasonNames[i]);
 
     for (let j=0; j < results.length; j++) {
-        updateEloForSeason(results[j]);
+        for (let k=0; k < results[j].length; k++) {
+            for (let l = 0; l < results[j][k].length; l++) {
+                updateEloForGame(results[j][k][l]);
+            }
+        }
     }    
 }
 
