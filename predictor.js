@@ -27,8 +27,6 @@ function gameToString(game) {
 }
  
 function predictionResultFromGame(game) {
-    totalGames++;
-
     const team1 = game.team_ids[0];
     let team1Mmr = elo[team1] ? elo[team1] : config.ELO.norm;
     let team1Result = 0.5;
@@ -104,9 +102,11 @@ console.log(predictionResultFromGame(results[0][0][0]));
 
 let sum = 0;
 for (let i in results[0][0]) {
+    totalGames++;
     console.log(gameToString(results[0][0][i]));
-    sum = sum + predictionResultFromGame(results[0][0][i]);
-    console.log(predictionResultFromGame(results[0][0][i]) + '\n');
+    const points = predictionResultFromGame(results[0][0][i]);
+    sum = sum + points;
+    console.log(points + '\n');
 }
 
 console.log('\nsum ' + sum);
