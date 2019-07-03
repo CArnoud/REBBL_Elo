@@ -25,13 +25,11 @@ const seasonNames = {
 };
 
 function readFile(seasonName, fileName) {
-    console.log('files/' + seasonName + '/' + fileName);
     return JSON.parse(fs.readFileSync('files/' + seasonName + '/' + fileName));
 }
 
 function readSeason(seasonName) {
     const fileNames = fs.readdirSync('files/' + seasonName);
-    console.log(fileNames);
     const results = [];
     for (let i = 0; i < fileNames.length; i++) {
         results.push(readFile(seasonName, fileNames[i]));
@@ -92,7 +90,6 @@ function updateEloForRound(round) {
 }
 
 function updateEloForSeason(season) {
-    console.log('season update ' + season.length);
     for (let i = 0; i < season.length; i++) {
         updateEloForRound(season[i]);
     }
@@ -108,3 +105,13 @@ for (let i = 0; i < seasonNames.REL.length && i < numberOfSeasons; i++) {
 
 console.log(elo);
 console.log(Object.keys(elo).length);
+
+let eloList = [];
+let sum = 0;
+for (let i in elo) {
+    eloList.push(elo[i]);
+    sum = sum + elo[i];
+}
+
+// console.log('sum ' + sum);
+// console.log('avg ' + (sum / eloList.length));
