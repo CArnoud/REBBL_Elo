@@ -80,6 +80,8 @@ function predictionResultFromGame(game) {
     }
     else {
         if (!winner) {
+            totalDraws++;
+            totalCorrect++;
             points = 1;
         }
     }
@@ -97,17 +99,24 @@ for (let i = 0; i < fileNames.length; i++) {
     results.push(readDivision(seasonName, fileNames[i]));
 }
 
-console.log(gameToString(results[0][0][0]));
-console.log(predictionResultFromGame(results[0][0][0]));
-
 let sum = 0;
-for (let i in results[0][0]) {
-    totalGames++;
-    console.log(gameToString(results[0][0][i]));
-    const points = predictionResultFromGame(results[0][0][i]);
-    sum = sum + points;
-    console.log(points + '\n');
+for (let i in results) {
+    for (let j in results[i][0]) {
+        totalGames++;
+        console.log(gameToString(results[i][0][j]));
+        const points = predictionResultFromGame(results[i][0][j]);
+        sum = sum + points;
+        console.log(points + '\n');
+    }
 }
+
+// for (let i in results[0][0]) {
+//     totalGames++;
+//     console.log(gameToString(results[0][0][i]));
+//     const points = predictionResultFromGame(results[0][0][i]);
+//     sum = sum + points;
+//     console.log(points + '\n');
+// }
 
 console.log('\nsum ' + sum);
 console.log('avg ' + (sum/totalGames));
@@ -116,4 +125,4 @@ console.log('\ntotal games ' + totalGames);
 console.log('total correct ' + totalCorrect);
 console.log('total draws ' + totalDraws);
 console.log('ratio ' + (totalCorrect/totalGames));
-console.log('ration excluding draws ' + (totalCorrect/(totalGames-totalDraws)));
+console.log('ratio excluding draws ' + (totalCorrect/(totalGames-totalDraws)));
