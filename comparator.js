@@ -6,7 +6,7 @@ const Season = require('./models/season').Season;
 const Predictor = require('./utils/predictor').Predictor;
 
 const numberOfSeasonsToLoad = 1;
-const numberOfSeasonsToSimulate = 4;
+const numberOfSeasonsToSimulate = 10;
 let elo = {};
 
 // get elo for all parameter sets
@@ -69,3 +69,24 @@ console.log(numberOfTeams);
 console.log(numberOfGames);
 console.log(numberOfDraws);
 console.log(results);
+
+const sums = [];
+for (let i in results) {
+    let sum = 0;
+    for (let j in results[i]) {
+        sum = sum + results[i][j];
+    }
+
+    sums.push(sum);
+}
+
+let totalGames = 0;
+let totalDraws = 0;
+for (let i in numberOfGames) {
+    totalGames = totalGames + numberOfGames[i];
+    totalDraws = totalDraws + numberOfDraws[i];
+}
+
+console.log(sums);
+console.log(totalGames);
+console.log(totalDraws);
