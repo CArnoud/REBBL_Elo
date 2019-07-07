@@ -46,6 +46,7 @@ for (let i in eloCalculators) {
 // predict results using each of the elos (prediction algorithm doesnt change)
 const numberOfGames = [];
 const numberOfTeams = [];
+const numberOfDraws = [];
 const results = [];
 for (let i in predictors) {
     const predictorResults = [];
@@ -54,10 +55,9 @@ for (let i in predictors) {
         const seasonToPredict = new Season(seasonNames[j]);
         if (numberOfGames.length === j - numberOfSeasonsToLoad) {
             numberOfGames.push(seasonToPredict.getNumberOfGames());
-        }
-        if (numberOfTeams.length === j - numberOfSeasonsToLoad) {
             numberOfTeams.push(seasonToPredict.getTeamIds().length);
-        }        
+            numberOfDraws.push(seasonToPredict.getNumberOfDraws());
+        }
         predictorResults.push(predictors[i].predictSeason(seasonToPredict));
     }
 
@@ -67,4 +67,5 @@ for (let i in predictors) {
 // compare results
 console.log(numberOfTeams);
 console.log(numberOfGames);
+console.log(numberOfDraws);
 console.log(results);

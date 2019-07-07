@@ -7,9 +7,25 @@ class Season {
         console.log(seasonName);
         this.seasonName = seasonName;
         const fileNames = fileHelper.readDir(this.getDirPath());
+        this.numberOfGames = 0;
+        this.numberOfDraws = 0;
         this.games = [];
         for (let i = 0; i < fileNames.length; i++) {
             this.games.push(JSON.parse(fileHelper.readFile(this.getFilePath(fileNames[i]))));
+        }
+        this.loadStats();
+    }
+
+    loadStats() {
+        for (let i in this.games) {
+            for (let j in this.games[i]) {
+                for (let k in this.games[i][j]) {
+                    this.numberOfGames++;
+                    if (this.games[i][j][k].winner_id === null) {
+                        this.numberOfDraws++;
+                    }
+                }
+            }
         }
     }
 
@@ -50,17 +66,11 @@ class Season {
     }
 
     getNumberOfGames() {
-        let result = 0;
+        return this.numberOfGames;
+    }
 
-        for (let i in this.games) {
-            for (let j in this.games[i]) {
-                for (let k in this.games[i][j]) {
-                    result++;
-                }
-            }
-        }
-
-        return result;
+    getNumberOfDraws() {
+        return this.numberOfDraws;
     }
 }
 
