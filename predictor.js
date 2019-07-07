@@ -20,13 +20,6 @@ function getExpectedResult(team_elo, opponent_elo) {
     return R1 / (R1 + R2);
 }
 
-function gameToString(game) {
-    const result = game.team_ids[0] + '(' + (elo[game.team_ids[0]] ? elo[game.team_ids[0]] : config.ELO.norm) + ') vs ' +
-        game.team_ids[1] + '(' + (elo[game.team_ids[1]] ? elo[game.team_ids[1]] : config.ELO.norm) + ')\n' +
-        'winner: ' + game.winner_id;
-    return result;
-}
- 
 function predictionResultFromGame(game) {
     const team1 = game.team_ids[0];
     let team1Mmr = elo[team1] ? elo[team1] : config.ELO.norm;
