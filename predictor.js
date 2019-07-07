@@ -1,8 +1,9 @@
 const fileHelper = require('./utils/fileHelper');
 const seasonNames = require('./utils/rebbl').seasonNames;
 const config = require('./utils/config');
-const seasonName = seasonNames[1];
+const Game = require('./models/game');
 
+const seasonName = seasonNames[1];
 const elo = JSON.parse(fileHelper.readFile('files/elo/elo.json'));
 
 let totalGames = 0;
@@ -52,6 +53,7 @@ function predictionResultFromGame(game) {
     console.log(e1 + ' ' + e2);
 
     let points = 0;
+    totalGames++;
     if (e1 > e2) {
         if (winner === team1) {
             points = e1 * 1;
@@ -79,9 +81,10 @@ function predictionResultFromGame(game) {
         }
     }
     else {
+        totalGames--;
         if (!winner) {
             totalDraws++;
-            totalCorrect++;
+            // totalCorrect++;            
             points = 1;
         }
     }
@@ -102,8 +105,10 @@ for (let i = 0; i < fileNames.length; i++) {
 let sum = 0;
 for (let i in results) {
     for (let j in results[i][0]) {
-        totalGames++;
-        console.log(gameToString(results[i][0][j]));
+        const game = results[i][0][j];
+        console.log(Game.toString(game, 
+            elo[game.team_ids[0]] ? elo[game.team_ids[0]] : config.ELO.norm, 
+            elo[game.team_ids[1]] ? elo[game.team_ids[1]] : config.ELO.norm));
         const points = predictionResultFromGame(results[i][0][j]);
         sum = sum + points;
         console.log(points + '\n');

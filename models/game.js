@@ -10,3 +10,10 @@ exports.parse = (gameObj) => {
     result.winner_id = gameObj.winner ? gameObj.winner.team.id : null;
     return result;
 };
+
+exports.toString = (gameObj, elo1, elo2) => {
+    const result = gameObj.team_ids[0] + '(' + elo1 + ') vs ' +
+        gameObj.team_ids[1] + '(' + elo2 + ')\n' +
+        'winner: ' + gameObj.winner_id;
+    return result;
+};
