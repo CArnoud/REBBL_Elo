@@ -2,6 +2,7 @@ const fileHelper = require('./utils/fileHelper');
 const seasonNames = require('./utils/rebbl').seasonNames;
 const config = require('./utils/config');
 const Game = require('./models/game');
+const Season = require('./models/season').Season;
 
 const seasonName = seasonNames[1];
 const elo = JSON.parse(fileHelper.readFile('files/elo/elo.json'));
@@ -85,15 +86,7 @@ function predictionResultFromGame(game) {
     return points;
 }
 
-function readDivision(seasonName, fileName) {
-    return JSON.parse(fileHelper.readFile('files/' + seasonName + '/' + fileName));
-}
-
-const fileNames = fileHelper.readDir('files/' + seasonName);
-const results = [];
-for (let i = 0; i < fileNames.length; i++) {
-    results.push(readDivision(seasonName, fileNames[i]));
-}
+const results = new Season(seasonName).getGames();
 
 let sum = 0;
 for (let i in results) {

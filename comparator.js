@@ -2,38 +2,44 @@ const fileHelper = require('./utils/fileHelper.js');
 const seasonNames = require('./utils/rebbl').seasonNames;
 const config = require('./utils/config');
 const Elo = require('./utils/elo').Elo;
+const Season = require('./models/season').Season;
 
 const numberOfSeasons = 1;
 let elo = {};
 
-function readDivision(seasonName, fileName) {
-    return JSON.parse(fileHelper.readFile('files/' + seasonName + '/' + fileName));
-}
+// get elo for all parameter sets
+const parameterSets = [{
+    norm: config.ELO.norm,
+    stretchingFactor: config.ELO.stretchingFactor,
+    maxChange: config.ELO.maxChange,
+    name: 'config'
+}, {
+    norm: 1000,
+    stretchingFactor: 2 * Math.sqrt(46),
+    maxChange: 100,
+    name: 'fancy stretching'
+}];
 
-function readSeason(seasonName) {
-    const fileNames = fileHelper.readDir('files/' + seasonName);
-    const results = [];
-    for (let i = 0; i < fileNames.length; i++) {
-        results.push(readDivision(seasonName, fileNames[i]));
-    }
+let eloCalculators = [];
+for (m in parameterSets) {
+    eloCalculators.push(new Elo(parameterSets[m].norm, parameterSets[m].stretchingFactor, parameterSets[m].maxChange));
+    for (let i = 0; i < seasonNames.length && i < numberOfSeasons; i++) {
+        //const results = readSeason(seasonNames[i]);
 
-    return results;
-}
-
-const eloCalculator = new Elo(config.ELO.norm, config.ELO.stretchingFactor, config.ELO.maxChange);
-for (let i = 0; i < seasonNames.length && i < numberOfSeasons; i++) {
-    const results = readSeason(seasonNames[i]);
-
-    for (let j=0; j < results.length; j++) {
-        for (let k=0; k < results[j].length; k++) {
-            for (let l = 0; l < results[j][k].length; l++) {
-                eloCalculator.update(results[j][k][l]);
+        const season = new Season(seasonNames[i]);
+        const results = season.getGames();
+    
+        for (let j=0; j < results.length; j++) {
+            for (let k=0; k < results[j].length; k++) {
+                for (let l = 0; l < results[j][k].length; l++) {
+                    eloCalculators[m].update(results[j][k][l]);
+                }
             }
         }
-    }    
+    }
 }
 
-elo = eloCalculator.getElo();
+elo = eloCalculators[0].getElo();
 console.log(elo);
 console.log(Object.keys(elo).length);
 
@@ -47,4 +53,9 @@ for (let i in elo) {
 // console.log('sum ' + sum);
 // console.log('avg ' + (sum / eloList.length));
 
+// save all elo checkpoints
 fileHelper.writeFile('files/elo/elo.json', JSON.stringify(elo));
+
+// predict results using each of the elos (prediction algorithm doesnt change)
+
+// compare results
