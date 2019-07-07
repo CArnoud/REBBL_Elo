@@ -11,13 +11,22 @@ class Elo {
     }
 
     calculateOdds(team_elo, opponent_elo) {
-        return Math.pow(10,((team_elo - opponent_elo)/this.stretchingFactor));
+        const diff = team_elo - opponent_elo;
+        const exponent = -diff/this.stretchingFactor;
+        return 1 / (1 + Math.pow(10,exponent));
+        // return Math.pow(10,((team_elo - opponent_elo)/this.stretchingFactor));
     }
 
+    /*
+    x = Ra - Rb
+    exponent = -(x/n)
+    E = 1/(1+10^exponent)
+    */
     getExpectedResult(team_elo, opponent_elo) {
-        const R1 = this.calculateOdds(team_elo, opponent_elo);
-        const R2 = this.calculateOdds(opponent_elo, team_elo);
-        return R1 / (R1 + R2);
+        return this.calculateOdds(team_elo, opponent_elo);
+        // const R1 = this.calculateOdds(team_elo, opponent_elo);
+        // const R2 = this.calculateOdds(opponent_elo, team_elo);
+        // return R1 / (R1 + R2);
     }
 
     getUpdatedElo(previous_elo, expected_result, actual_result) {
@@ -49,6 +58,18 @@ class Elo {
 
         this.elo[team1] = this.getUpdatedElo(team1Elo, e1, team1Result);
         this.elo[team2] = this.getUpdatedElo(team2Elo, e2, team2Result);
+    }
+
+    updateFullSeason(season) {
+        const games = season.getGames();
+
+        for (let i in games) {
+            for (let j in games[i]) {
+                for (let k in games[i][j]) {
+                    this.update(games[i][j][k]);
+                }
+            }
+        }
     }
 
     getElo() {
