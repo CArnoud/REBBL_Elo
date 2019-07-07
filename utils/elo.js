@@ -1,6 +1,6 @@
 class Elo {
-    constructor(norm, stretchingFactor, maxChange) {
-        this.elo = {};
+    constructor(norm, stretchingFactor, maxChange, initialElo) {
+        this.elo = initialElo;
         this.norm = norm;
         this.stretchingFactor = stretchingFactor;
         this.maxChange = maxChange;
