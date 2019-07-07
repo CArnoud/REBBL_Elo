@@ -48,6 +48,20 @@ class Season {
 
         return result;
     }
+
+    getNumberOfGames() {
+        let result = 0;
+
+        for (let i in this.games) {
+            for (let j in this.games[i]) {
+                for (let k in this.games[i][j]) {
+                    result++;
+                }
+            }
+        }
+
+        return result;
+    }
 }
 
 exports.Season = Season;

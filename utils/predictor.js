@@ -26,6 +26,41 @@ class Predictor {
     isPredictorCorrect(game) {
         return this.predictWinner(game) === game.winner_id;
     }
+
+    predictSeason(season) {
+        const games = season.getGames();
+        let correct = 0;
+
+        //temp 
+        let teamId;
+
+        for (let i in games) {
+            for (let j in games[i]) {
+                for (let k in games[i][j]) {
+                    const game = games[i][j][k];
+
+                    //temp 
+                    if (!teamId) {
+                        teamId = game.team_ids[0];
+                    }
+                    if (teamId === game.team_ids[0] || teamId === game.team_ids[1]) {
+                        console.log('team ' + teamId + ' ' + this.eloCalculator.getTeamElo(teamId) + ' (' +
+                        this.eloCalculator.getTeamElo(game.team_ids[0]) + ' vs ' + this.eloCalculator.getTeamElo(game.team_ids[1]) +
+                        '): ' + (game.winner_id? this.eloCalculator.getTeamElo(game.winner_id):'draw'));
+                    }
+                    // /temp 
+
+                    if (this.isPredictorCorrect(game)) {
+                        correct++;
+                    }
+
+                    this.eloCalculator.update(game);
+                }
+            }
+        }
+
+        return correct;
+    }
 }
 
 exports.Predictor = Predictor;
