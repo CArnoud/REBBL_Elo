@@ -34,15 +34,15 @@ class Elo {
     }
 
     update(game) {
-        const team1 = game.team_ids[0];
+        const team1 = game.getTeam(0).id;
         let team1Elo = this.getTeamElo(team1);
         let team1Result = 0.5;
 
-        const team2 = game.team_ids[1];
+        const team2 = game.getTeam(1).id;
         let team2Elo = this.getTeamElo(team2);
         let team2Result = 0.5;
 
-        const winner = game.winner_id;
+        const winner = game.getWinnerId();
 
         if (winner === team1) {
             team1Result = 1;

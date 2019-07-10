@@ -1,4 +1,5 @@
 const fileHelper = require('../utils/fileHelper.js');
+const Game = require('../models/game').Game;
 
 const filePrefix = './files/';
 
@@ -11,7 +12,18 @@ class Season {
         this.numberOfDraws = 0;
         this.games = [];
         for (let i = 0; i < fileNames.length; i++) {
-            this.games.push(JSON.parse(fileHelper.readFile(this.getFilePath(fileNames[i]))));
+            const gamesList = JSON.parse(fileHelper.readFile(this.getFilePath(fileNames[i])));
+            const division = [];
+
+            for (let j = 0; j < gamesList.length; j++) {
+                const round = [];
+                for (let k = 0; k < gamesList[j].length; k++) {
+                    round.push(new Game(gamesList[j][k]));
+                }
+                division.push(round);
+            }
+
+            this.games.push(division);
         }
         this.loadStats();
     }
@@ -21,7 +33,7 @@ class Season {
             for (let j in this.games[i]) {
                 for (let k in this.games[i][j]) {
                     this.numberOfGames++;
-                    if (this.games[i][j][k].winner_id === null) {
+                    if (this.games[i][j][k].getWinnerId() === null) {
                         this.numberOfDraws++;
                     }
                 }
@@ -52,11 +64,11 @@ class Season {
             for (let j in this.games[i]) {
                 for (let k in this.games[i][j]) {
                     const game = this.games[i][j][k];
-                    if (!result.includes(game.team_ids[0])) {
-                        result.push(game.team_ids[0]);
+                    if (!result.includes(game.getTeam(0).id)) {
+                        result.push(game.getTeam(0).id);
                     }
-                    if (!result.includes(game.team_ids[1])) {
-                        result.push(game.team_ids[1]);
+                    if (!result.includes(game.getTeam(1).id)) {
+                        result.push(game.getTeam(1).id);
                     }
                 }
             }
