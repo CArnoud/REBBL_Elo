@@ -11,9 +11,9 @@ let elo = {};
 
 // get elo for all parameter sets
 const parameterSets = [{
-    norm: config.ELO.norm,
-    stretchingFactor: config.ELO.stretchingFactor,
-    maxChange: config.ELO.maxChange,
+    norm: 1000,
+    stretchingFactor: 2000,
+    maxChange: 100,
     name: 'config'
 }, {
     norm: 1000,
@@ -25,6 +25,11 @@ const parameterSets = [{
     stretchingFactor: 400,
     maxChange: 40,
     name: 'chess'
+}, {
+    norm: 1000,
+    stretchingFactor: 300,
+    maxChange: 30,
+    name: 'chess-adjusted'
 }];
 
 let eloCalculators = [];
@@ -37,7 +42,6 @@ for (m in parameterSets) {
 }
 
 // save all elo checkpoints
-fileHelper.writeFile('files/elo/elo.json', JSON.stringify(elo));
 let predictors = [];
 for (let i in eloCalculators) {
     predictors.push(new Predictor(eloCalculators[i]));
