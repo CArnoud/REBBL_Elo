@@ -22,13 +22,20 @@ const games = rounds[roundIndex];
 for (let i in games) {
     const currentGame = new Game(games[i]);
     const teams = currentGame.getTeams();
-    const elo0 = eloCalculator.getTeamElo(teams[0].id);
-    const elo1 = eloCalculator.getTeamElo(teams[1].id);
 
     console.log(
-        teams[0].id + ' - ' + teams[0].race.padEnd(12, ' ') + ' (' + Math.round(elo0) + '): ' + (eloCalculator.getExpectedResult(elo0, elo1)*100).toFixed(2) + '%\n' +
+        getTeamString(teams[0], teams[1]) +
         'VS\n' +
-        teams[1].id + ' - ' + teams[1].race.padEnd(12, ' ') + ' (' + Math.round(elo1) + '): ' + (eloCalculator.getExpectedResult(elo1, elo0)*100).toFixed(2) + '%\n' +
+        getTeamString(teams[1], teams[0]) +
+        'Winner: ' + currentGame.winner_id +
         '\n'
     );
+}
+
+function getTeamString(team, opponent) {
+    const elo = eloCalculator.getTeamElo(team.id);
+    const oppElo =  eloCalculator.getTeamElo(opponent.id);
+
+    return team.id + ' - ' + team.tv.toString().padStart(4) + ' TV ' + team.race.padEnd(12, ' ') + ' (' + Math.round(elo) + '): ' 
+        + (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%\n';
 }
