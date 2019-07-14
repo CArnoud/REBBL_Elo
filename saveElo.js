@@ -15,4 +15,4 @@ for (let i = 0; i < seasonNames.length && i < numberOfSeasonsToLoad; i++) {
 
 // save result to a file
 const result = eloCalculator.getElo();
-fileHelper.writeFile(config.ELO.currentEloFileName, JSON.stringify(result));
+fileHelper.writeFile(config.FILE.currentEloFileName, JSON.stringify(result));

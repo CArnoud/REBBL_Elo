@@ -2,9 +2,12 @@ const seasonNames = require('./utils/rebbl').seasonNames;
 const Elo = require('./utils/elo').Elo;
 const Season = require('./models/season').Season;
 const Predictor = require('./utils/predictor').Predictor;
+const config = require('./utils/config');
+const fileHelper = require('./utils/fileHelper.js');
 
 const numberOfSeasonsToLoad = 1;
 const numberOfSeasonsToSimulate = 10;
+
 
 // get elo for all parameter sets
 const parameterSets = [{
@@ -99,3 +102,5 @@ console.log(totalGames);
 console.log(totalDraws);
 
 console.log(sumRaceMatchups);
+
+fileHelper.writeFile(config.FILE.raceMatchupsFileName, JSON.stringify(sumRaceMatchups));
