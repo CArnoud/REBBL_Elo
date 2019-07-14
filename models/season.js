@@ -3,6 +3,7 @@ const Game = require('../models/game').Game;
 
 const filePrefix = './files/';
 
+
 class Season {
     constructor(seasonName) {
         console.log(seasonName);
@@ -10,6 +11,7 @@ class Season {
         const fileNames = fileHelper.readDir(this.getDirPath());
         this.numberOfGames = 0;
         this.numberOfDraws = 0;
+        this.raceMatchups = {};
         this.games = [];
         for (let i = 0; i < fileNames.length; i++) {
             const gamesList = JSON.parse(fileHelper.readFile(this.getFilePath(fileNames[i])));
@@ -28,17 +30,48 @@ class Season {
         this.loadStats();
     }
 
+    updateRaceMatchups(game) {
+        const races = [game.getTeam(0).race, game.getTeam(1).race];
+        const indexString = races[1] > races[0] ? races[0] + races[1] : races[1] + races[0];
+        let statObj = this.raceMatchups[indexString];
+
+        if (!statObj) {
+            statObj = {
+                draw: 0
+            }
+            statObj[races[0]] = 0;
+            statObj[races[1]] = 0;
+        }
+
+        if (game.getWinnerId()) {
+            const winnerRace = game.getTeam(0).id === game.getWinnerId() ? races[0] : races[1];
+            statObj[winnerRace]++;
+        }
+        else {
+            statObj.draw++;
+        }
+
+        this.raceMatchups[indexString] = statObj;
+    }
+
     loadStats() {
         for (let i in this.games) {
             for (let j in this.games[i]) {
                 for (let k in this.games[i][j]) {
+                    const game = this.games[i][j][k];
+
+                    this.updateRaceMatchups(game);
                     this.numberOfGames++;
-                    if (this.games[i][j][k].getWinnerId() === null) {
+                    if (game.getWinnerId() === null) {
                         this.numberOfDraws++;
                     }
                 }
             }
         }
+    }
+
+    getRaceMatchups() {
+        return this.raceMatchups;
     }
 
     getDirPath() {
