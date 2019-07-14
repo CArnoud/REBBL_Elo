@@ -54,6 +54,24 @@ class Season {
         this.raceMatchups[indexString] = statObj;
     }
 
+    addRaceMatchups(matchups) {
+        const matchupIndeces = Object.keys(matchups);
+
+        for (let i in matchupIndeces) {
+            const index = matchupIndeces[i];
+            const keys = Object.keys(matchups[index]);
+            
+            for (let j in keys) {
+                if (!this.raceMatchups[index]) {
+                    this.raceMatchups[index] = {};
+                }
+                
+                const currentValue = this.raceMatchups[index][keys[j]] ? this.raceMatchups[index][keys[j]] : 0;
+                this.raceMatchups[index][keys[j]] = currentValue + matchups[index][keys[j]];
+            }
+        }
+    }
+
     loadStats() {
         for (let i in this.games) {
             for (let j in this.games[i]) {

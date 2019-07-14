@@ -49,6 +49,7 @@ const numberOfGames = [];
 const numberOfTeams = [];
 const numberOfDraws = [];
 const results = [];
+let sumRaceMatchups;
 for (let i in predictors) {
     const predictorResults = [];
 
@@ -61,7 +62,10 @@ for (let i in predictors) {
         }
         predictorResults.push(predictors[i].predictSeason(seasonToPredict));
 
-        console.log(seasonToPredict.getRaceMatchups());
+        if (sumRaceMatchups) {
+            seasonToPredict.addRaceMatchups(sumRaceMatchups);
+        }
+        sumRaceMatchups = seasonToPredict.getRaceMatchups();
     }
 
     results.push(predictorResults);
@@ -93,3 +97,5 @@ for (let i in numberOfGames) {
 console.log(sums);
 console.log(totalGames);
 console.log(totalDraws);
+
+console.log(sumRaceMatchups);
