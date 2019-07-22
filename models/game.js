@@ -35,11 +35,13 @@ class Game {
             match_id: rebblObj.match_id,
             teams: [{
                 id: rebblObj.opponents[0].team.id,
+                name: rebblObj.opponents[0].team.name,
                 coach_id: rebblObj.opponents[0].coach.id,
                 tv: rebblObj.opponents[0].team.value,
                 race: rebblObj.legacy ? getNormalizedRace(rebblObj.opponents[0].team.race) : rebblObj.opponents[0].team.race
             }, {
                 id: rebblObj.opponents[1].team.id,
+                name: rebblObj.opponents[1].team.name,
                 coach_id: rebblObj.opponents[1].coach.id,
                 tv: rebblObj.opponents[1].team.value,
                 race: rebblObj.legacy ? getNormalizedRace(rebblObj.opponents[1].team.race) : rebblObj.opponents[1].team.race

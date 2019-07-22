@@ -8,7 +8,7 @@ const matchups = require('./files/race/matchups');
 
 const seasonName = seasonNames[10];
 const divisionIndex = 0;
-const roundIndex = 5;
+const roundIndex = 12;
 
 // Load elo
 const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));
@@ -46,7 +46,8 @@ function getTeamString(team, opponent) {
     const elo = eloCalculator.getTeamElo(team.id);
     const oppElo = eloCalculator.getTeamElo(opponent.id);
 
-    return team.id + ' - ' + 
+    return team.name.padEnd(32) + 
+        team.id + ' - ' + 
         team.tv.toString().padStart(4) + 
         ' TV ' + team.race.padEnd(12, ' ') + 
         ' (' + Math.round(elo) + ' Elo): ' + 
