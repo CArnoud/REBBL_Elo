@@ -3,6 +3,8 @@ const seasonNames = require('./utils/rebbl').seasonNames;
 const config = require('./utils/config');
 const Elo = require('./utils/elo').Elo;
 const Game = require('./models/game').Game;
+const matchups = require('./files/race/matchups');
+
 
 const seasonName = seasonNames[10];
 const divisionIndex = 0;
@@ -34,8 +36,14 @@ for (let i in games) {
 
 function getTeamString(team, opponent) {
     const elo = eloCalculator.getTeamElo(team.id);
-    const oppElo =  eloCalculator.getTeamElo(opponent.id);
+    const oppElo = eloCalculator.getTeamElo(opponent.id);
+    const raceIndex = team.race > opponent.race ? opponent.race + team.race : team.race + opponent.race;
 
-    return team.id + ' - ' + team.tv.toString().padStart(4) + ' TV ' + team.race.padEnd(12, ' ') + ' (' + Math.round(elo) + '): ' 
-        + (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%\n';
+    return team.id + ' - ' + 
+        team.tv.toString().padStart(4) + 
+        ' TV ' + team.race.padEnd(12, ' ') + 
+        ' (' + Math.round(elo) + ' Elo): ' + 
+        (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%\n' + 
+        matchups[raceIndex][team.race] + '-' + matchups[raceIndex]['draw'] + '-' + matchups[raceIndex][opponent.race] + ' vs ' + opponent.race +
+        '\n';
 }
