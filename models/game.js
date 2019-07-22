@@ -1,3 +1,10 @@
+const legacyRaces = require('../utils/legacyRaces.json');
+
+
+function getNormalizedRace(raceNumber) {
+    return legacyRaces[raceNumber];
+}
+
 class Game {
     constructor(matchObj) {
         this.league = matchObj.league;
@@ -30,12 +37,12 @@ class Game {
                 id: rebblObj.opponents[0].team.id,
                 coach_id: rebblObj.opponents[0].coach.id,
                 tv: rebblObj.opponents[0].team.value,
-                race: rebblObj.opponents[0].team.race
+                race: rebblObj.legacy ? getNormalizedRace(rebblObj.opponents[0].team.race) : rebblObj.opponents[0].team.race
             }, {
                 id: rebblObj.opponents[1].team.id,
                 coach_id: rebblObj.opponents[1].coach.id,
                 tv: rebblObj.opponents[1].team.value,
-                race: rebblObj.opponents[1].team.race
+                race: rebblObj.legacy ? getNormalizedRace(rebblObj.opponents[1].team.race) : rebblObj.opponents[1].team.race
             }]
         };
         result.winner_id = rebblObj.winner ? rebblObj.winner.team.id : null;
