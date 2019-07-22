@@ -1,0 +1,27 @@
+{
+    "Human": 1,
+    "Dwarf": 2,
+    "Skaven": 3,
+    "Orc": 4,
+    "Lizardman": 5,
+    "Goblin": 6,
+    "WoodElf": 7,
+    "Chaos": 8,
+    "DarkElf": 9,
+    "Undead": 10,
+    "Halfling": 11,
+    "Norse": 12,
+    "Amazon": 13,
+    "ProElf": 14,
+    "HighElf": 15,
+    "Khemri": 16,
+    "Necromantic": 17,
+    "Nurgle": 18,
+    "Ogre": 19,
+    "Vampire": 20,
+    "ChaosDwarf": 21,
+    "Underworld": 22,
+    
+    "Bretonnia": 24,
+    "Kislev": 25
+}
