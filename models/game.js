@@ -2,6 +2,10 @@ const legacyRaces = require('../utils/legacyRaces.json');
 
 
 function getNormalizedRace(raceNumber) {
+    const result = legacyRaces[raceNumber];
+    if (!result) {
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    }
     return legacyRaces[raceNumber];
 }
 

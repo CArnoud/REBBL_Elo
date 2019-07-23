@@ -53,6 +53,7 @@ const numberOfTeams = [];
 const numberOfDraws = [];
 const results = [];
 let sumRaceMatchups;
+let sumRaceRecords;
 for (let i in predictors) {
     const predictorResults = [];
 
@@ -65,10 +66,14 @@ for (let i in predictors) {
         }
         predictorResults.push(predictors[i].predictSeason(seasonToPredict));
 
-        if (sumRaceMatchups) {
-            seasonToPredict.addRaceMatchups(sumRaceMatchups);
-        }
-        sumRaceMatchups = seasonToPredict.getRaceMatchups();
+        if (i === '0') {
+            if (sumRaceMatchups) {
+                seasonToPredict.addRaceMatchups(sumRaceMatchups);
+                seasonToPredict.addRaceRecords(sumRaceRecords);
+            }
+            sumRaceMatchups = seasonToPredict.getRaceMatchups();
+            sumRaceRecords = seasonToPredict.getRaceRecords();
+        }        
     }
 
     results.push(predictorResults);
@@ -101,6 +106,8 @@ console.log(sums);
 console.log(totalGames);
 console.log(totalDraws);
 
-console.log(sumRaceMatchups);
+// console.log(sumRaceMatchups);
+// console.log(sumRaceRecords);
 
+fileHelper.writeFile(config.FILE.raceRecordsFileName, JSON.stringify(sumRaceRecords));
 fileHelper.writeFile(config.FILE.raceMatchupsFileName, JSON.stringify(sumRaceMatchups));

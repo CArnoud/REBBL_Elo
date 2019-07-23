@@ -12,6 +12,7 @@ class Season {
         this.numberOfGames = 0;
         this.numberOfDraws = 0;
         this.raceMatchups = {};
+        this.raceRecords = {};
         this.games = [];
         for (let i = 0; i < fileNames.length; i++) {
             const gamesList = JSON.parse(fileHelper.readFile(this.getFilePath(fileNames[i])));
@@ -30,9 +31,61 @@ class Season {
         this.loadStats();
     }
 
+    getWinnerRace(game) {
+        if (!game.getWinnerId()) {
+            return null;
+        }
+        else {
+            return game.getTeam(0).id === game.getWinnerId() ? game.getTeam(0).race : game.getTeam(1).race;
+        }
+    }
+
+    updateSpecificRaceRecord(race, winnerRace) {
+        let currentObj = this.raceRecords[race] ? this.raceRecords[race] : { wins: 0, draws: 0, losses: 0 };
+
+        if (race === winnerRace) {
+            currentObj.wins++;
+        }
+        else if (!winnerRace) {
+            currentObj.draws++;
+        }
+        else {
+            currentObj.losses++;
+        }
+        this.raceRecords[race] = currentObj;
+    }
+
+    updateRaceRecords(game) {
+        const races = [game.getTeam(0).race, game.getTeam(1).race];
+        const winnerRace = this.getWinnerRace(game);
+        this.updateSpecificRaceRecord(races[0], winnerRace);
+        this.updateSpecificRaceRecord(races[1], winnerRace);
+    }
+
+    addRaceRecords(raceRecords) {
+        const recordIndices = Object.keys(raceRecords);
+
+        for (let i in recordIndices) {
+            const index = recordIndices[i];
+
+            if (!this.raceRecords[index]) {
+                this.raceRecords[index] = {
+                    wins: 0,
+                    draws: 0,
+                    losses: 0
+                };
+            }
+
+            this.raceRecords[index].wins = this.raceRecords[index].wins + raceRecords[index].wins;
+            this.raceRecords[index].draws = this.raceRecords[index].draws + raceRecords[index].draws;
+            this.raceRecords[index].losses = this.raceRecords[index].losses + raceRecords[index].losses;
+        }
+    }
+
     updateRaceMatchups(game) {
         const races = [game.getTeam(0).race, game.getTeam(1).race];
         const indexString = races[1] > races[0] ? races[0] + races[1] : races[1] + races[0];
+        const winnerRace = this.getWinnerRace(game);
         let statObj = this.raceMatchups[indexString];
 
         if (!statObj) {
@@ -43,8 +96,7 @@ class Season {
             statObj[races[1]] = 0;
         }
 
-        if (game.getWinnerId()) {
-            const winnerRace = game.getTeam(0).id === game.getWinnerId() ? races[0] : races[1];
+        if (winnerRace) {
             statObj[winnerRace]++;
         }
         else {
@@ -79,6 +131,7 @@ class Season {
                     const game = this.games[i][j][k];
 
                     this.updateRaceMatchups(game);
+                    this.updateRaceRecords(game);
                     this.numberOfGames++;
                     if (game.getWinnerId() === null) {
                         this.numberOfDraws++;
@@ -90,6 +143,10 @@ class Season {
 
     getRaceMatchups() {
         return this.raceMatchups;
+    }
+
+    getRaceRecords() {
+        return this.raceRecords;
     }
 
     getDirPath() {
