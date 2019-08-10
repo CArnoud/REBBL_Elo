@@ -7,7 +7,7 @@ for (let i in recordIndices) {
     const index = recordIndices[i];
     const total = records[index].wins + records[index].draws + records[index].losses;
 
-    winRateArray.push([index, records[index].wins / total]);
+    winRateArray.push([index, records[index].wins / total, total]);
 }
 
 winRateArray.sort((a, b) => {

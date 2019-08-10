@@ -30,6 +30,11 @@ const parameterSets = [{
     stretchingFactor: 300,
     maxChange: 30,
     name: 'chess-adjusted'
+}, {
+    norm: 1000,
+    stretchingFactor: 700,
+    maxChange: 100,
+    name: 'charlitos'
 }];
 
 let eloCalculators = [];
