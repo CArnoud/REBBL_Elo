@@ -5,17 +5,22 @@ class Database {
         this.connection = mysql.createConnection({
             host     : 'localhost',
             user     : 'root',
-            password : '',
+            password : 'password',
             database : 'rebbl'
           });
-        this.connection.connect();
     }
 
-    end() {
-        this.connection.end();
+    async connect() {
+        await this.connection.connect();
+        console.log('Connected to database.');
     }
 
-    createTeam = async (teamObj) => {
+    async end() {
+        await this.connection.end();
+        console.log('Database connection ended.');
+    }
+
+    async insertTeam(teamObj) {
         // {
         //     id: rebblObj.opponents[0].team.id,
         //     name: rebblObj.opponents[0].team.name,

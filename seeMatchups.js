@@ -5,10 +5,11 @@ const Elo = require('./utils/elo').Elo;
 const Game = require('./models/game').Game;
 const matchups = require('./files/race/matchups');
 
+const tableify = require('tableify');
 
-const seasonName = seasonNames[10];
-const divisionIndex = 0;
-const roundIndex = 12;
+const seasonName = seasonNames[11];
+const divisionIndex = 2;
+const roundIndex = 0;
 
 // Load elo
 const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));
@@ -20,6 +21,8 @@ const fileNames = fileHelper.readDir(directoryPath);
 const rounds = JSON.parse(fileHelper.readFile(directoryPath + '/' + fileNames[divisionIndex]));
 const games = rounds[roundIndex];
 
+const table = [];
+
 // Proccess games
 for (let i in games) {
     const currentGame = new Game(games[i]);
@@ -27,12 +30,17 @@ for (let i in games) {
 
     console.log(
         getTeamString(teams[0], teams[1]) +
-        'VS\n' +
+        // 'VS\n' +
         getTeamString(teams[1], teams[0]) +
-        getRaceMatchupString(teams) +
-        'Winner: ' + currentGame.winner_id +
-        '\n'
+        // getRaceMatchupString(teams) +
+        // 'Winner: ' + currentGame.winner_id +
+        // '\n'
+        ''
     );
+
+    table.push(getTeamRow(teams[0], teams[1]));
+    table.push(getTeamRow(teams[1], teams[0]));
+    table.push({});
 }
 
 function getRaceMatchupString(teams) {
@@ -47,10 +55,28 @@ function getTeamString(team, opponent) {
     const oppElo = eloCalculator.getTeamElo(opponent.id);
 
     return team.name.padEnd(32) + 
-        team.id + ' - ' + 
+        // team.id + 
+        ' - ' + 
         team.tv.toString().padStart(4) + 
         ' TV ' + team.race.padEnd(12, ' ') + 
         ' (' + Math.round(elo) + ' Elo): ' + 
         (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%' + 
         '\n';
 }
+
+function getTeamRow(team, opponent) {
+    const elo = eloCalculator.getTeamElo(team.id);
+    const oppElo = eloCalculator.getTeamElo(opponent.id);
+
+    return {
+        Name: team.name,
+        Race: team.race,
+        TV: team.tv.toString(),
+        Elo: Math.round(elo),
+        "Expected Result": (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%'
+    }
+}
+
+ 
+var html = tableify(table); 
+console.log(html);

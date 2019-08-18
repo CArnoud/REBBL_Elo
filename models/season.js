@@ -1,7 +1,7 @@
 const fileHelper = require('../utils/fileHelper.js');
 const Game = require('../models/game').Game;
 
-const filePrefix = './files/';
+const filePrefix = './files/GMAN/';
 
 
 class Season {
@@ -29,6 +29,10 @@ class Season {
             this.games.push(division);
         }
         this.loadStats();
+    }
+
+    async saveGameToDatabase(connection, game) {
+        await connection.insertTeam(game.getTeams()[0]);
     }
 
     getWinnerRace(game) {
