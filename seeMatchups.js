@@ -9,7 +9,7 @@ const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
 const divisionIndex = 2;
-const roundIndex = 0;
+const roundIndex = 1;
 
 // Load elo
 const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));
@@ -38,16 +38,22 @@ for (let i in games) {
         ''
     );
 
+    if (i > 0) {
+        table.push({});
+    }
     table.push(getTeamRow(teams[0], teams[1]));
     table.push(getTeamRow(teams[1], teams[0]));
-    table.push({});
+    
 }
 
 function getRaceMatchupString(teams) {
     const raceIndex = teams[0].race > teams[1].race ? teams[1].race + teams[0].race : teams[0].race + teams[1].race;
-    return matchups[raceIndex][teams[0].race] + ' ' + teams[0].race + ' - ' +
-        matchups[raceIndex][teams[1].race] + ' ' + teams[1].race + ' - ' +
-        matchups[raceIndex]['draw'] + ' draw\n';
+    // return matchups[raceIndex][teams[0].race] + ' ' + teams[0].race + ' - ' +
+    //     matchups[raceIndex][teams[1].race] + ' ' + teams[1].race + ' - ' +
+    //     matchups[raceIndex]['draw'] + ' draw\n';
+    return matchups[raceIndex][teams[0].race] + '-' +
+        matchups[raceIndex]['draw'] + '-' +
+        matchups[raceIndex][teams[1].race] + ' vs ' + teams[1].race;
 }
 
 function getTeamString(team, opponent) {
@@ -73,7 +79,8 @@ function getTeamRow(team, opponent) {
         Race: team.race,
         TV: team.tv.toString(),
         Elo: Math.round(elo),
-        "Expected Result": (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%'
+        "Race Matchup": getRaceMatchupString([team, opponent]),
+        "Expected Result": (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%',       
     }
 }
 

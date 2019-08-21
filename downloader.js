@@ -7,7 +7,7 @@ const Game = require('./models/game').Game;
 
 const updateAll = false;
 
-const FILES_FOLDER = 'files/GMAN/'
+const FILES_FOLDER = 'files/'
 
 function parseSeason(season) {
     const seasonResult = [];
@@ -38,14 +38,14 @@ function parseSeason(season) {
 }
 
 for (let i = 0; i < seasonNames.length; i++) {
-    request.get(REBBL.api.host + '/division/' + REBBL.leagueNames.GMAN + '/' + seasonNames[i], (error, response) => {
+    request.get(REBBL.api.host + '/division/' + REBBL.leagueNames.REL + '/' + seasonNames[i], (error, response) => {
         const divisionNames = JSON.parse(response.body);
         console.log('season: ' + seasonNames[i] + ', divisions: ' + divisionNames.length);
 
         fs.mkdir(FILES_FOLDER + seasonNames[i], { recursive: true }, (err) => {
             if (!err || updateAll) {
                 for (let j = 0; j < divisionNames.length; j++) {
-                    request.get(REBBL.api.host + '/division/' + REBBL.leagueNames.GMAN + '/' + seasonNames[i] + '/' + divisionNames[j], (error2, response2) => {
+                    request.get(REBBL.api.host + '/division/' + REBBL.leagueNames.REL + '/' + seasonNames[i] + '/' + divisionNames[j], (error2, response2) => {
                         const games = JSON.parse(response2.body);
                         const season = parseSeason(games);            
             

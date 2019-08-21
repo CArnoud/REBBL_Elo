@@ -1,13 +1,12 @@
 const fileHelper = require('../utils/fileHelper.js');
 const Game = require('../models/game').Game;
 
-const filePrefix = './files/GMAN/';
-
 
 class Season {
-    constructor(seasonName) {
+    constructor(seasonName, leagueName) {
         console.log(seasonName);
         this.seasonName = seasonName;
+        this.filePrefix = './files/' + (leagueName ? leagueName + '/' : '');
         const fileNames = fileHelper.readDir(this.getDirPath());
         this.numberOfGames = 0;
         this.numberOfDraws = 0;
@@ -21,7 +20,9 @@ class Season {
             for (let j = 0; j < gamesList.length; j++) {
                 const round = [];
                 for (let k = 0; k < gamesList[j].length; k++) {
-                    round.push(new Game(gamesList[j][k]));
+                    if (gamesList[j][k].match_id) {
+                        round.push(new Game(gamesList[j][k]));
+                    }
                 }
                 division.push(round);
             }
@@ -154,7 +155,7 @@ class Season {
     }
 
     getDirPath() {
-        return filePrefix + this.seasonName;
+        return this.filePrefix + this.seasonName;
     }
 
     getFilePath(fileName) {
