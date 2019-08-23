@@ -54,6 +54,12 @@ class Game {
         result.winner_id = rebblObj.winner ? rebblObj.winner.team.id : null;
         return result;
     }
+
+    static isGameValid(rebblObj) {
+        return rebblObj.match_id &&
+            !rebblObj.opponents[0].team.name.toLowerCase().includes('admin') &&
+            !rebblObj.opponents[1].team.name.toLowerCase().includes('admin');
+    }
 }
 
 exports.Game = Game;

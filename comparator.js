@@ -128,13 +128,13 @@ console.log(sums);
 console.log(totalGames);
 console.log(totalDraws);
 
-// console.log(sumRaceMatchups);
+console.log(sumRaceMatchups);
 // console.log(sumRaceRecords);
 
 // fileHelper.writeFile(config.FILE.raceRecordsFileName, JSON.stringify(sumRaceRecords));
 // fileHelper.writeFile(config.FILE.raceMatchupsFileName, JSON.stringify(sumRaceMatchups));
 
-console.log('\n\n');
-for (let i=0; i < predictors.length; i++) {
-    console.log(predictors[i].eloCalculator.getTeamElo(2292328));
-}
+// console.log('\n\n');
+// for (let i=0; i < predictors.length; i++) {
+//     console.log(predictors[i].eloCalculator.getTeamElo(2292328));
+// }

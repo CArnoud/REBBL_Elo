@@ -20,7 +20,7 @@ class Season {
             for (let j = 0; j < gamesList.length; j++) {
                 const round = [];
                 for (let k = 0; k < gamesList[j].length; k++) {
-                    if (gamesList[j][k].match_id) {
+                    if (Game.isGameValid(gamesList[j][k])) {
                         round.push(new Game(gamesList[j][k]));
                     }
                 }

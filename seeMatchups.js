@@ -8,7 +8,7 @@ const matchups = require('./files/race/matchups');
 const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
-const divisionIndex = 2;
+const divisionIndex = 11;
 const roundIndex = 1;
 
 // Load elo
@@ -77,8 +77,8 @@ function getTeamRow(team, opponent) {
     return {
         Name: team.name,
         Race: team.race,
-        TV: team.tv.toString(),
-        Elo: Math.round(elo),
+        // TV: team.tv.toString(),
+        "Elo Rating": Math.round(elo),
         "Race Matchup": getRaceMatchupString([team, opponent]),
         "Expected Result": (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%',       
     }
