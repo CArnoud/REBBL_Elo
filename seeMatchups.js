@@ -48,9 +48,6 @@ for (let i in games) {
 
 function getRaceMatchupString(teams) {
     const raceIndex = teams[0].race > teams[1].race ? teams[1].race + teams[0].race : teams[0].race + teams[1].race;
-    // return matchups[raceIndex][teams[0].race] + ' ' + teams[0].race + ' - ' +
-    //     matchups[raceIndex][teams[1].race] + ' ' + teams[1].race + ' - ' +
-    //     matchups[raceIndex]['draw'] + ' draw\n';
     return matchups[raceIndex][teams[0].race] + '-' +
         matchups[raceIndex]['draw'] + '-' +
         matchups[raceIndex][teams[1].race] + ' vs ' + teams[1].race;

@@ -8,7 +8,8 @@ const CONFIG = {
         filePath: './files/',
         currentEloFileName: 'files/elo/current.json',
         raceMatchupsFileName: 'files/race/matchups.json',
-        raceRecordsFileName: 'files/race/records.json'
+        raceRecordsFileName: 'files/race/records.json',
+        predictionFileName: 'files/predictions/predictions.json'
     }
 };
 
