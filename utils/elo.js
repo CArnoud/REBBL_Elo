@@ -60,13 +60,15 @@ class Elo {
         this.elo[team2] = this.getUpdatedElo(team2Elo, e2, team2Result);
     }
 
-    updateFullSeason(season) {
+    updateFullSeason(season, weekToStopAt) {
         const games = season.getGames();
 
         for (let i in games) {
             for (let j in games[i]) {
                 for (let k in games[i][j]) {
-                    this.update(games[i][j][k]);
+                    if (!weekToStopAt || j < weekToStopAt) {
+                        this.update(games[i][j][k]);
+                    }
                 }
             }
         }
