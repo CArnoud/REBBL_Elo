@@ -6,7 +6,7 @@ class Season {
     constructor(seasonName, leagueName) {
         console.log(seasonName);
         this.seasonName = seasonName;
-        this.filePrefix = './files/' + (leagueName ? leagueName + '/' : '');
+        this.filePrefix = './files/';
         const fileNames = fileHelper.readDir(this.getDirPath());
         this.numberOfGames = 0;
         this.numberOfDraws = 0;
