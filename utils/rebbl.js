@@ -4,7 +4,8 @@ const REBBL = {
     },
     leagueNames: {
         REL: 'REBBL%20-%20REL',
-        GMAN: 'REBBL%20-%20GMan'
+        GMAN: 'REBBL%20-%20GMan',
+        BIGO: 'REBBL%20-%20Big%20O'
     },
     seasonNames: [
         'season 1',

@@ -8,7 +8,7 @@ const matchups = require('./files/race/matchups');
 const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
-const divisionIndex = 11;
+const divisionIndex = 2;
 const roundIndex = 1;
 
 // Load elo

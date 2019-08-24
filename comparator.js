@@ -38,8 +38,8 @@ const parameterSets = [{
     name: 'charlitos'
 }, {
     norm: 1000,
-    stretchingFactor: 5000,
-    maxChange: 1000,
+    stretchingFactor: 10000,
+    maxChange: 500,
     name: 'crazy'
 }];
 
@@ -128,11 +128,11 @@ console.log(sums);
 console.log(totalGames);
 console.log(totalDraws);
 
-console.log(sumRaceMatchups);
+// console.log(sumRaceMatchups);
 // console.log(sumRaceRecords);
 
-// fileHelper.writeFile(config.FILE.raceRecordsFileName, JSON.stringify(sumRaceRecords));
-// fileHelper.writeFile(config.FILE.raceMatchupsFileName, JSON.stringify(sumRaceMatchups));
+fileHelper.writeFile(config.FILE.raceRecordsFileName, JSON.stringify(sumRaceRecords));
+fileHelper.writeFile(config.FILE.raceMatchupsFileName, JSON.stringify(sumRaceMatchups));
 
 // console.log('\n\n');
 // for (let i=0; i < predictors.length; i++) {

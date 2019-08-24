@@ -2,9 +2,10 @@ const legacyRaces = require('../utils/legacyRaces.json');
 
 
 function getNormalizedRace(raceNumber) {
-    const result = legacyRaces[raceNumber];
+    let result = legacyRaces[raceNumber];
     if (!result) {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+        console.log('Race not found ' + raceNumber);
+        result = raceNumber;
     }
     return legacyRaces[raceNumber];
 }
@@ -55,10 +56,10 @@ class Game {
         return result;
     }
 
-    static isGameValid(rebblObj) {
-        return rebblObj.match_id &&
-            !rebblObj.opponents[0].team.name.toLowerCase().includes('admin') &&
-            !rebblObj.opponents[1].team.name.toLowerCase().includes('admin');
+    static isGameValid(matchObj) {
+        return matchObj.match_id &&
+            !matchObj.teams[0].name.toLowerCase().includes('admin') &&
+            !matchObj.teams[1].name.toLowerCase().includes('admin');
     }
 }
 
