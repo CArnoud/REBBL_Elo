@@ -7,7 +7,7 @@ const matchups = require('../files/race/matchups');
 
 
 const seasonName = seasonNames[11];
-const roundIndex = 2;
+const roundIndex = 1;
 
 
 // Load elo
@@ -37,7 +37,7 @@ function getTeamPrediction(team, opponent) {
         // TV: team.tv.toString(),
         "Elo Rating": Math.round(elo),
         "Race Matchup": getRaceMatchupString([team, opponent]),
-        "Expected Result": (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%',       
+        "Expected Result": (eloCalculator.getExpectedResult(elo, oppElo)).toFixed(4),
     }
 }
 

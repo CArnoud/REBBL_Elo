@@ -65,8 +65,8 @@ class Elo {
 
         for (let i in games) {
             for (let j in games[i]) {
-                for (let k in games[i][j]) {
-                    if (!weekToStopAt || j < weekToStopAt) {
+                if (!weekToStopAt || j < weekToStopAt) {
+                    for (let k in games[i][j]) {                    
                         this.update(games[i][j][k]);
                     }
                 }
