@@ -7,13 +7,15 @@ const Game = require('./models/game').Game;
 
 const updateAll = false;
 
+const FILES_FOLDER = 'files/'
+
 function parseSeason(season) {
     const seasonResult = [];
     const roundSet = new Set([]);
 
     for (let i=0; i < season.length; i++) {
         const game = Game.parse(season[i]);
-        if (!roundSet.has(game.round)) {
+        if (game.round && !roundSet.has(game.round)) {
             roundSet.add(game.round);
             seasonResult.push([]);
         }
@@ -22,39 +24,53 @@ function parseSeason(season) {
     for (let i=0; i < season.length; i++) {
         try {
             const game = Game.parse(season[i]);
-            seasonResult[game.round-1].push(game);
+            if (game.round) {
+                seasonResult[game.round-1].push(game);
+            }            
         }
         catch (e) {
-            console.log('Unable to process round ' + result.round + 
+            console.log('Unable to process round ' + i + 
                         ' season.length ' + season.length + 
                         ' rounds ' + roundSet.length + 
-                        ': ' + season[i]);
+                        ': ' + JSON.stringify(season[i]));
         }
     }
 
     return seasonResult;
 }
 
-for (let i = 0; i < seasonNames.length; i++) {
-    request.get(REBBL.api.host + '/division/' + REBBL.leagueNames.REL + '/' + seasonNames[i], (error, response) => {
-        const divisionNames = JSON.parse(response.body);
-        console.log('season: ' + seasonNames[i] + ', divisions: ' + divisionNames.length);
-
-        fs.mkdir('files/' + seasonNames[i], { recursive: true }, (err) => {
-            if (!err || updateAll) {
-                for (let j = 0; j < divisionNames.length; j++) {
-                    request.get(REBBL.api.host + '/division/' + REBBL.leagueNames.REL + '/' + seasonNames[i] + '/' + divisionNames[j], (error2, response2) => {
-                        const games = JSON.parse(response2.body);
-                        const season = parseSeason(games);            
-            
-                        const fileName = 'files/' + seasonNames[i] + '/' + REBBL.leagueNames.REL + '.' + divisionNames[j] + '.json';    
-                        fileHelper.writeFile(fileName, JSON.stringify(season));
-                    });
+function downloadLeague(leagueNameOnAPI, simpleLeagueName, seasons) {
+    for (let i = 0; i < seasons.length; i++) {
+        request.get(REBBL.api.host + '/division/' + leagueNameOnAPI + '/' + seasons[i], (error, response) => {
+            const divisionNames = JSON.parse(response.body);
+            console.log(simpleLeagueName + ', season: ' + seasons[i] + ', divisions: ' + divisionNames.length);
+    
+            fs.mkdir(FILES_FOLDER + seasons[i], { recursive: true }, (err) => {
+                for (let j = 0; j < divisionNames.length; j++) {                    
+                    if (!divisionNames[j].includes('Swiss')) {
+                        request.get(REBBL.api.host + '/division/' + leagueNameOnAPI + '/' + seasons[i] + '/' + divisionNames[j], (error2, response2) => {
+                            if (!error2) {
+                                const games = JSON.parse(response2.body);
+                                const season = parseSeason(games);            
+                    
+                                const fileName = FILES_FOLDER + '/' + seasons[i] + '/' + simpleLeagueName + '.' + divisionNames[j] + '.json';    
+                                fileHelper.writeFile(fileName, JSON.stringify(season));
+                            }
+                            else {
+                                console.log('API error on ' + simpleLeagueName + ', ' + seasons[i] + ', ' + divisionNames[j] + ': ' + error2);
+                            }
+                        });
+                    }
+                    else {
+                        console.log('Removed ' + divisionNames[j]);
+                    }
                 }
-            }
-            else {
-                console.log('season: ' + seasonNames[i] + err);
-            }                
+            });
         });
-    });
-};
+    };
+}
+
+downloadLeague(REBBL.leagueNames.REL, 'REL', seasonNames);
+downloadLeague(REBBL.leagueNames.GMAN, 'GMAN', seasonNames);
+// downloadLeague(REBBL.leagueNames.BIGO, 'BIGO', seasonNames.slice(3));
+

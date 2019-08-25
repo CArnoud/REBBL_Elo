@@ -4,6 +4,7 @@ const Season = require('./models/season').Season;
 const Predictor = require('./utils/predictor').Predictor;
 const config = require('./utils/config');
 const fileHelper = require('./utils/fileHelper.js');
+const Database = require('./database/database').Database;
 
 const numberOfSeasonsToLoad = 1;
 const numberOfSeasonsToSimulate = 10;
@@ -30,16 +31,37 @@ const parameterSets = [{
     stretchingFactor: 300,
     maxChange: 30,
     name: 'chess-adjusted'
+}, {
+    norm: 1000,
+    stretchingFactor: 700,
+    maxChange: 100,
+    name: 'charlitos'
+}, {
+    norm: 1000,
+    stretchingFactor: 10000,
+    maxChange: 500,
+    name: 'crazy'
 }];
 
+savetoDb = async (season) => {
+    const database = new Database();
+    await database.connect().catch(error => console.log(error));
+    await season.saveGameToDatabase(database, season.getGames()[0][0][0]).catch(error => console.log(error));
+    await database.end().catch(error => console.log(error));
+}
+
+let aSeason;
 let eloCalculators = [];
 for (m in parameterSets) {
     eloCalculators.push(new Elo(parameterSets[m].norm, parameterSets[m].stretchingFactor, parameterSets[m].maxChange, {}));
     for (let i = 0; i < seasonNames.length && i < numberOfSeasonsToLoad; i++) {
-        const season = new Season(seasonNames[i]);
-        eloCalculators[m].updateFullSeason(season);
+        const season = new Season(seasonNames[i]);        
+        eloCalculators[m].updateFullSeason(season);     
+        aSeason = season;   
     }
 }
+
+// savetoDb(aSeason);
 
 // save all elo checkpoints
 let predictors = [];
@@ -111,3 +133,8 @@ console.log(totalDraws);
 
 fileHelper.writeFile(config.FILE.raceRecordsFileName, JSON.stringify(sumRaceRecords));
 fileHelper.writeFile(config.FILE.raceMatchupsFileName, JSON.stringify(sumRaceMatchups));
+
+// console.log('\n\n');
+// for (let i=0; i < predictors.length; i++) {
+//     console.log(predictors[i].eloCalculator.getTeamElo(2292328));
+// }
