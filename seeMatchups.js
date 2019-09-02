@@ -8,8 +8,8 @@ const matchups = require('./files/race/matchups');
 const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
-const divisionIndex = 21;
-const roundIndex = 1;
+const divisionIndex = 20;
+const roundIndex = 3;
 
 // Load elo
 const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));
@@ -38,12 +38,14 @@ for (let i in games) {
         ''
     );
 
-    if (i > 0) {
-        table.push({});
+    if (!teams[0].name.toLowerCase().includes('admin') &&
+        !teams[1].name.toLowerCase().includes('admin')) {
+        if (i > 0) {
+            table.push({});
+        }
+        table.push(getTeamRow(teams[0], teams[1]));
+        table.push(getTeamRow(teams[1], teams[0]));
     }
-    table.push(getTeamRow(teams[0], teams[1]));
-    table.push(getTeamRow(teams[1], teams[0]));
-    
 }
 
 function getRaceMatchupString(teams) {
@@ -76,7 +78,7 @@ function getTeamRow(team, opponent) {
         Race: team.race,
         // TV: team.tv.toString(),
         "Elo Rating": Math.round(elo),
-        "Race Matchup": getRaceMatchupString([team, opponent]),
+        "Race Matchup (REL and GMAN history)": getRaceMatchupString([team, opponent]),
         "Expected Result": (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%',       
     }
 }

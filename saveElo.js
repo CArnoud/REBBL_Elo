@@ -5,13 +5,13 @@ const Elo = require('./utils/elo').Elo;
 const Season = require('./models/season').Season;
 
 const numberOfSeasonsToLoad = 12;
-const weekToStopAt = 1;
+const weekToStopAt = null;
 
 
 const eloCalculator = new Elo(config.ELO.norm, config.ELO.stretchingFactor, config.ELO.maxChange, {});
 for (let i = 0; i < seasonNames.length && i < numberOfSeasonsToLoad; i++) {
     const season = new Season(seasonNames[i]);
-    if (i === seasonNames.length - 1) {
+    if (i === seasonNames.length - 1 && weekToStopAt) {
         eloCalculator.updateFullSeason(season, weekToStopAt);
     }   
     else {

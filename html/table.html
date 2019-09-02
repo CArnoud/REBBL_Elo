@@ -2,36 +2,28 @@
 <html>
 <head>
 <style>
-#customers {
+.customers {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
 }
 
-#customers td, #customers th {
+.customers td, .customers th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#customers tr:nth-child(2){background-color: #f2f2f2;}
-#customers tr:nth-child(5){background-color: #f2f2f2;}
-#customers tr:nth-child(8){background-color: #f2f2f2;}
-#customers tr:nth-child(11){background-color: #f2f2f2;}
-#customers tr:nth-child(14){background-color: #f2f2f2;}
-#customers tr:nth-child(17){background-color: #f2f2f2;}
-#customers tr:nth-child(20){background-color: #f2f2f2;}
+.customers tr:nth-child(2){background-color: #f2f2f2;}
+.customers tr:nth-child(5){background-color: #f2f2f2;}
+.customers tr:nth-child(8){background-color: #f2f2f2;}
+.customers tr:nth-child(11){background-color: #f2f2f2;}
+.customers tr:nth-child(14){background-color: #f2f2f2;}
+.customers tr:nth-child(17){background-color: #f2f2f2;}
+.customers tr:nth-child(20){background-color: #f2f2f2;}
 
-/* #customers tr:nth-child(1){background-color: #f2f2f2;}
-#customers tr:nth-child(4){background-color: #f2f2f2;}
-#customers tr:nth-child(7){background-color: #f2f2f2;}
-#customers tr:nth-child(10){background-color: #f2f2f2;}
-#customers tr:nth-child(13){background-color: #f2f2f2;}
-#customers tr:nth-child(16){background-color: #f2f2f2;}
-#customers tr:nth-child(19){background-color: #f2f2f2;}
- */
-#customers tr:hover {background-color: #ddd;}
+.customers tr:hover {background-color: #ddd;}
 
-#customers th {
+.customers th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
@@ -41,8 +33,46 @@
 </style>
 </head>
 <body>
-<table id='customers'>
-  <thead><tr><th class="string">Name</th><th class="string">Race</th><th class="number">Elo Rating</th><th class="string">Race Matchup</th><th class="string">Expected Result</th></tr></thead><tbody><tr><td class="string">Stinger Security</td><td class="string">DarkElf</td><td class="number">931</td><td class="string">27-17-35 vs Necromantic</td><td class="string">31.46%</td></tr><tr><td class="string">CRBoyz Nashville Nasty</td><td class="string">Necromantic</td><td class="number">1168</td><td class="string">35-17-27 vs DarkElf</td><td class="string">68.54%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Snake Kitties</td><td class="string">Lizardman</td><td class="number">1159</td><td class="string">18-15-15 vs Undead</td><td class="string">80.40%</td></tr><tr><td class="string">Dungeon of Doom</td><td class="string">Undead</td><td class="number">730</td><td class="string">15-15-18 vs Lizardman</td><td class="string">19.60%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">MysteryScienceGoats3k</td><td class="string">Chaos</td><td class="number">387</td><td class="string">36-17-36 vs Skaven</td><td class="string">15.58%</td></tr><tr><td class="string">Altdorf Alcoholics</td><td class="string">Skaven</td><td class="number">900</td><td class="string">36-17-36 vs Chaos</td><td class="string">84.42%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">The GOATS of All Time</td><td class="string">Chaos</td><td class="number">797</td><td class="string">25-11-26 vs Dwarf</td><td class="string">35.87%</td></tr><tr><td class="string">Beer Brawl Club REBBL</td><td class="string">Dwarf</td><td class="number">974</td><td class="string">26-11-25 vs Chaos</td><td class="string">64.13%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">REL Pickles: Flash Point</td><td class="string">Human</td><td class="number">1120</td><td class="string">12-5-18 vs Norse</td><td class="string">76.96%</td></tr><tr><td class="string">Skinned Deep</td><td class="string">Norse</td><td class="number">753</td><td class="string">18-5-12 vs Human</td><td class="string">23.04%</td></tr></tbody>
+<table>
+    <a>REL 1</a>
+
+    <table class="customers"><thead><tr><th class="string">Name</th><th class="string">Race</th><th class="number">Elo Rating</th><th class="string">Race Matchup (REL and GMAN history)</th><th class="string">Expected Result</th></tr></thead><tbody><tr><td class="string">The Bad AppIes</td><td class="string">DarkElf</td><td class="number">1353</td><td class="string">76-47-84 vs Orc</td><td class="string">45.41%</td></tr><tr><td class="string">cheesetactics
+        mk.II</td><td class="string">Orc</td><td class="number">1409</td><td class="string">84-47-76 vs DarkElf</td><td class="string">54.59%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Conspiration Entropique</td><td class="string">Chaos</td><td class="number">1327</td><td class="string">46-22-44 vs HighElf</td><td class="string">33.60%</td></tr><tr><td class="string">Not An Anime Sports Team </td><td class="string">HighElf</td><td class="number">1534</td><td class="string">44-22-46 vs Chaos</td><td class="string">66.40%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Greenskin Brawlers</td><td class="string">Orc</td><td class="number">1457</td><td class="string">56-40-58 vs Necromantic</td><td class="string">57.30%</td></tr><tr><td class="string">Thick Rich and Creamy</td><td class="string">Necromantic</td><td class="number">1368</td><td class="string">58-40-56 vs Orc</td><td class="string">42.70%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">The Rowdy REBBL Rousers</td><td class="string">Nurgle</td><td class="number">1533</td><td class="string">48-24-60 vs Lizardman</td><td class="string">74.26%</td></tr><tr><td class="string">Fogmire Fenbeasts</td><td class="string">Lizardman</td><td class="number">1211</td><td class="string">60-24-48 vs Nurgle</td><td class="string">25.74%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td
+        class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">RAGE DORF</td><td class="string">Dwarf</td><td class="number">1363</td><td class="string">23-30-28 vs Nurgle</td><td class="string">48.56%</td></tr><tr><td class="string">Fear_And_Bloating</td><td class="string">Nurgle</td><td class="number">1381</td><td class="string">28-30-23 vs Dwarf</td><td class="string">51.44%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Arkangell's Will</td><td class="string">WoodElf</td><td class="number">1545</td><td class="string">47-17-46 vs Lizardman</td><td class="string">65.03%</td></tr><tr><td class="string">Charlestown Chiefs</td><td class="string">Lizardman</td><td class="number">1356</td><td class="string">46-17-47 vs WoodElf</td><td class="string">34.97%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Scooby and the Gang</td><td class="string">Necromantic</td><td class="number">1605</td><td class="string">49-46-49 vs Nurgle</td><td class="string">71.99%</td></tr><tr><td class="string">Gotta Catch Em AIl</td><td class="string">Nurgle</td><td class="number">1318</td><td class="string">49-46-49 vs Necromantic</td><td class="string">28.01%</td></tr></tbody></table>
+
+        <p>&nbsp;</p><a>REL 2A</a>
+
+  <table class="customers"><thead><tr><th class="string">Name</th><th class="string">Race</th><th class="number">Elo Rating</th><th class="string">Race Matchup (REL and GMAN history)</th><th class="string">Expected Result</th></tr></thead><tbody><tr><td class="string">Felwithe's Koada'Dal</td><td class="string">HighElf</td><td class="number">1384</td><td class="string">23-5-21 vs Bretonnia</td><td class="string">49.53%</td></tr><tr><td class="string">Battle Brothers</td><td class="string">Bretonnia</td><td class="number">1390</td><td class="string">21-5-23 vs HighElf</td><td class="string">50.47%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">BioWare for Life</td><td class="string">Vampire</td><td class="number">1032</td><td class="string">16-10-16 vs Nurgle</td><td class="string">18.81%</td></tr><tr><td class="string">Grungy Desserts</td><td class="string">Nurgle</td><td class="number">1476</td><td class="string">16-10-16 vs Vampire</td><td class="string">81.19%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">The Contract Killers</td><td class="string">ChaosDwarf</td><td class="number">1279</td><td class="string">47-26-46 vs Lizardman</td><td class="string">54.91%</td></tr><tr><td class="string">Lackland Long Tongues</td><td class="string">Lizardman</td><td class="number">1220</td><td class="string">46-26-47 vs ChaosDwarf</td><td class="string">45.09%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">REBBL CHEESE THIEVES</td><td class="string">Skaven</td><td class="number">1081</td><td class="string">35-21-47 vs ChaosDwarf</td><td class="string">54.63%</td></tr><tr><td class="string">REBBL Rage Quit</td><td class="string">ChaosDwarf</td><td class="number">1025</td><td class="string">47-21-35 vs Skaven</td><td class="string">45.37%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Welcome to the Dark Side</td><td class="string">DarkElf</td><td class="number">1276</td><td class="string">48-32-68 vs Necromantic</td><td class="string">41.57%</td></tr><tr><td class="string">The Forsaken Awoken</td><td class="string">Necromantic</td><td class="number">1379</td><td class="string">68-32-48 vs DarkElf</td><td
+class="string">58.43%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">The Greenie Weenies</td><td class="string">Orc</td><td class="number">1322</td><td class="string">65-42-81 vs Chaos</td><td class="string">58.96%</td></tr><tr><td class="string">Horn Stars MMXVIII</td><td class="string">Chaos</td><td class="number">1211</td><td class="string">81-42-65 vs Orc</td><td class="string">41.04%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Arequipa Nurglerers ReBBL</td><td class="string">Nurgle</td><td class="number">1256</td><td class="string">37-18-37 vs Nurgle</td><td class="string">39.40%</td></tr><tr><td class="string">Abysmal Cusp</td><td class="string">Nurgle</td><td class="number">1387</td><td class="string">37-18-37 vs Nurgle</td><td class="string">60.60%</td></tr></tbody></table>
+
+  <p>&nbsp;</p><a>REL 2B</a>
+
+  <table class="customers"><thead><tr><th class="string">Name</th><th class="string">Race</th><th class="number">Elo Rating</th><th class="string">Race Matchup (REL and GMAN history)</th><th class="string">Expected Result</th></tr></thead><tbody><tr><td class="string">Boss Hawg Outlaws</td><td class="string">ChaosDwarf</td><td class="number">1180</td><td class="string">25-9-25 vs ChaosDwarf</td><td class="string">44.58%</td></tr><tr><td class="string">Ace Trucking Co.</td><td class="string">ChaosDwarf</td><td class="number">1246</td><td class="string">25-9-25 vs ChaosDwarf</td><td class="string">55.42%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Yhetee to Conquer</td><td class="string">Norse</td><td class="number">1549</td><td class="string">24-14-44 vs
+    DarkElf</td><td class="string">68.36%</td></tr><tr><td class="string">We Chillin'</td><td class="string">DarkElf</td><td class="number">1315</td><td class="string">44-14-24 vs Norse</td><td class="string">31.64%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Stumpforce</td><td class="string">Dwarf</td><td class="number">1109</td><td class="string">35-19-43 vs Chaos</td><td class="string">26.14%</td></tr><tr><td class="string">Ars Goatia</td><td class="string">Chaos</td><td class="number">1425</td><td class="string">43-19-35 vs Dwarf</td><td class="string">73.86%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">One Cheese</td><td class="string">Skaven</td><td class="number">1242</td><td class="string">50-25-49 vs Nurgle</td><td class="string">41.14%</td></tr><tr><td class="string">The Grody Greens</td><td class="string">Nurgle</td><td class="number">1351</td><td class="string">49-25-50 vs Skaven</td><td class="string">58.86%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Gourmet Governors</td><td class="string">Vampire</td><td class="number">1178</td><td class="string">7-5-7 vs Human</td><td class="string">45.38%</td></tr><tr><td class="string">Bogue Bombers</td><td class="string">Human</td><td class="number">1234</td><td class="string">7-5-7 vs Vampire</td><td class="string">54.62%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Blighty Moes</td><td class="string">Nurgle</td><td class="number">1262</td><td class="string">23-13-28 vs Khemri</td><td class="string">55.51%</td></tr><tr><td class="string">Bring Out yer Undead</td><td class="string">Khemri</td><td class="number">1195</td><td class="string">28-13-23 vs Nurgle</td><td class="string">44.49%</td></tr><tr><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td><td class="undefined"></td></tr><tr><td class="string">Murdery Space Elf Troupe</td><td class="string">DarkElf</td><td class="number">1302</td><td class="string">49-14-49 vs DarkElf</td><td class="string">64.40%</td></tr><tr><td class="string">Romenyan Rebels</td><td class="string">DarkElf</td><td class="number">1122</td><td class="string">49-14-49 vs DarkElf</td><td class="string">35.60%</td></tr></tbody></table>
+
+    <p>&nbsp;</p><a>REL 3A</a>
+
+    <p>&nbsp;</p><a>REL 3B</a>
+
+    <p>&nbsp;</p><a>REL 3C</a>
+
+    <p>&nbsp;</p><a>REL 3A</a>
+
+    <p>&nbsp;</p><a>REL 3B</a>
+
+    <p>&nbsp;</p><a>REL 3C</a>
+
+    <p>&nbsp;</p><a>REL 4A</a>
+
+    <p>&nbsp;</p><a>REL 4B</a>
+
+    <p>&nbsp;</p><a>REL 4C</a>
+
+    <p>&nbsp;</p><a>REL 4D</a>
+
+    <p>&nbsp;</p><a>REL 4E</a>
+
+    <p>&nbsp;</p><a>REL 4F</a>
 </table>
 </body>
 </html>

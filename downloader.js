@@ -5,7 +5,7 @@ const seasonNames = require('./utils/rebbl').seasonNames;
 const REBBL = require('./utils/rebbl');
 const Game = require('./models/game').Game;
 
-const updateAll = false;
+const seasonToStartAt = 11;
 
 const FILES_FOLDER = 'files/'
 
@@ -40,7 +40,7 @@ function parseSeason(season) {
 }
 
 function downloadLeague(leagueNameOnAPI, simpleLeagueName, seasons) {
-    for (let i = 0; i < seasons.length; i++) {
+    for (let i = seasonToStartAt; i < seasons.length; i++) {
         request.get(REBBL.api.host + '/division/' + leagueNameOnAPI + '/' + seasons[i], (error, response) => {
             const divisionNames = JSON.parse(response.body);
             console.log(simpleLeagueName + ', season: ' + seasons[i] + ', divisions: ' + divisionNames.length);

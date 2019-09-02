@@ -1,7 +1,7 @@
 const CONFIG = {
     ELO: {
         norm: 1000,
-        stretchingFactor: 2000,
+        stretchingFactor: 700,
         maxChange: 100
     },
     FILE: {
