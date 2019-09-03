@@ -9,7 +9,7 @@ const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
 const firstDivision = 19;
-const lastDivision = 20;
+const lastDivision = 30;
 const roundIndex = 3;
 
 // Load elo
