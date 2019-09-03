@@ -9,7 +9,8 @@ const CONFIG = {
         currentEloFileName: 'files/elo/current.json',
         raceMatchupsFileName: 'files/race/matchups.json',
         raceRecordsFileName: 'files/race/records.json',
-        predictionFileName: 'files/predictions/predictions.json'
+        predictionFileName: 'files/predictions/predictions.json',
+        htmlPredictionsFilePath: 'html/predictions.html'
     }
 };
 
