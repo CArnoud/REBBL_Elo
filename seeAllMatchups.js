@@ -9,8 +9,8 @@ const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
 const firstDivision = 19;
-const lastDivision = 30;
-const roundIndex = 3;
+const lastDivision = 36;
+const roundIndex = 4;
 
 // Load elo
 const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));

@@ -7,7 +7,7 @@ const matchups = require('../files/race/matchups');
 
 
 const seasonName = seasonNames[11];
-const roundIndex = 1;
+const roundIndex = 3;
 
 
 // Load elo
@@ -31,6 +31,7 @@ for (let i=0; i < fileNames.length; i++) {
     const games = rounds[roundIndex];
     let numberOfGames = 0;
     let correctPicks = 0;
+    let draws = 0;
     gamesToBePlayed = gamesToBePlayed + games.length;
 
     // Proccess games
@@ -38,21 +39,27 @@ for (let i=0; i < fileNames.length; i++) {
         const currentGame = new Game(games[j]);
         const teams = currentGame.getTeams();
 
-        if (currentGame.match_id) {
+        if (Game.isGameValid(games[j])) {
+            // game has been played and is not an admin game
             if (currentGame.getWinnerId() === getFavoriteId(teams)) {
                 correctPicks++;
             }
 
             if (!currentGame.getWinnerId()) {
                 totalDraws++;
+                draws++;
             }
 
             numberOfGames++;
         }
+        else {
+            if (currentGame.match_id) {
+                gamesToBePlayed--; // removes admin games
+            }
+        }        
     }
 
-    console.log(fileNames[i]);
-    console.log(correctPicks + ' out of ' + numberOfGames + '\n');
+    console.log(fileNames[i] + ': ' + correctPicks + '-' + draws + '-' + (numberOfGames - correctPicks - draws));
     totalGames = totalGames + numberOfGames;
     totalCorrect = totalCorrect + correctPicks;
     numberOfGames = 0;
