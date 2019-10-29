@@ -8,9 +8,9 @@ const matchups = require('./files/race/matchups');
 const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
-const firstDivision = 19;
-const lastDivision = 36;
-const roundIndex = 4;
+const firstDivision = 0;
+const lastDivision = 18;
+const roundIndex = 10;
 
 // Load elo
 const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));
@@ -60,9 +60,14 @@ fileHelper.writeFile(config.FILE.htmlPredictionsFilePath, html);
 
 function getRaceMatchupString(teams) {
     const raceIndex = teams[0].race > teams[1].race ? teams[1].race + teams[0].race : teams[0].race + teams[1].race;
-    return matchups[raceIndex][teams[0].race] + '-' +
+    if (matchups[raceIndex]) {
+        return matchups[raceIndex][teams[0].race] + '-' +
         matchups[raceIndex]['draw'] + '-' +
         matchups[raceIndex][teams[1].race] + ' vs ' + teams[1].race;
+    }
+    else {
+        return "?-?-?";
+    }
 }
 
 function getTeamRow(team, opponent) {

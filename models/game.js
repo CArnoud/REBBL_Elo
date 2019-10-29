@@ -7,7 +7,7 @@ function getNormalizedRace(raceNumber) {
         console.log('Race not found ' + raceNumber);
         result = raceNumber;
     }
-    return legacyRaces[raceNumber];
+    return result;
 }
 
 class Game {
@@ -33,6 +33,7 @@ class Game {
     }
 
     static parse(rebblObj) {
+        try {
         const result = {
             league: rebblObj.league,
             competition: rebblObj.competition,
@@ -54,6 +55,10 @@ class Game {
         };
         result.winner_id = rebblObj.winner ? rebblObj.winner.team.id : null;
         return result;
+        }
+        catch(e) {
+            console.log('Problematic game: ' + JSON.stringify(rebblObj));
+        }
     }
 
     static isGameValid(matchObj) {

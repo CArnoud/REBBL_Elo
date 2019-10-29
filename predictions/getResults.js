@@ -7,7 +7,7 @@ const matchups = require('../files/race/matchups');
 
 
 const seasonName = seasonNames[11];
-const roundIndex = 3;
+const roundIndex = 9;
 
 
 // Load elo
@@ -25,6 +25,8 @@ let totalGames = 0;
 let totalCorrect = 0;
 let totalDraws = 0;
 let gamesToBePlayed = 0;
+let biggestUpsetString = "";
+let biggestUpsetChance = 100;
 
 for (let i=0; i < fileNames.length; i++) {
     const rounds = JSON.parse(fileHelper.readFile(directoryPath + '/' + fileNames[i]));
@@ -44,10 +46,20 @@ for (let i=0; i < fileNames.length; i++) {
             if (currentGame.getWinnerId() === getFavoriteId(teams)) {
                 correctPicks++;
             }
-
-            if (!currentGame.getWinnerId()) {
-                totalDraws++;
-                draws++;
+            else {
+                if (!currentGame.getWinnerId()) {
+                    totalDraws++;
+                    draws++;
+                }
+                else {
+                    const underdog = getFavoriteId(teams) === teams[0].id ? teams[1] : teams[0];
+                    const chance = eloCalculator.getExpectedResult(eloCalculator.getTeamElo(underdog.id), eloCalculator.getTeamElo(getFavoriteId(teams)));
+                    if (chance < biggestUpsetChance) {
+                        biggestUpsetString = underdog.name + ' ' + chance;
+                        biggestUpsetChance = chance;
+                        console.log(biggestUpsetString);
+                    }
+                }
             }
 
             numberOfGames++;

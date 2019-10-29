@@ -1,15 +1,15 @@
-const fileHelper = require('./utils/fileHelper.js');
-const seasonNames = require('./utils/rebbl').seasonNames;
-const config = require('./utils/config');
-const Elo = require('./utils/elo').Elo;
-const Game = require('./models/game').Game;
-const matchups = require('./files/race/matchups');
+const fileHelper = require('../utils/fileHelper.js');
+const seasonNames = require('../utils/rebbl').seasonNames;
+const config = require('../utils/config');
+const Elo = require('../utils/elo').Elo;
+const Game = require('../models/game').Game;
+const matchups = require('../files/race/matchups');
 
 const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
-const divisionIndex = 21;
-const roundIndex = 4;
+const divisionIndex = 19;
+const roundIndex = 5;
 
 // Load elo
 const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));
@@ -32,9 +32,9 @@ for (let i in games) {
         getTeamString(teams[0], teams[1]) +
         // 'VS\n' +
         getTeamString(teams[1], teams[0]) +
-        // getRaceMatchupString(teams) +
+        getRaceMatchupString(teams) +
         // 'Winner: ' + currentGame.winner_id +
-        // '\n'
+        '\n' +
         ''
     );
 

@@ -16,7 +16,7 @@ function parseSeason(season) {
 
     for (let i=0; i < season.length; i++) {
         const game = Game.parse(season[i]);
-        if (game.round && !roundSet.has(game.round)) {
+        if (game && game.round && !roundSet.has(game.round)) {
             roundSet.add(game.round);
             seasonResult.push([]);
         }
@@ -25,9 +25,9 @@ function parseSeason(season) {
     for (let i=0; i < season.length; i++) {
         try {
             const game = Game.parse(season[i]);
-            if (game.round) {
+            if (game && game.round) {
                 seasonResult[game.round-1].push(game);
-            }            
+            }
         }
         catch (e) {
             console.log('Unable to process round ' + i + 

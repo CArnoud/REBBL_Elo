@@ -7,7 +7,7 @@ const fileHelper = require('./utils/fileHelper.js');
 const Database = require('./database/database').Database;
 
 const numberOfSeasonsToLoad = 1;
-const numberOfSeasonsToSimulate = 10;
+const numberOfSeasonsToSimulate = 11;
 
 
 // get elo for all parameter sets
