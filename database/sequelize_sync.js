@@ -23,6 +23,7 @@ const Race = sequelize.define('race', {
 });
 
 const Team = sequelize.define('team', {
+    rebbl_id: Sequelize.STRING,
     name: Sequelize.STRING,
     coach_id: Sequelize.STRING
 });
