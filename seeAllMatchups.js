@@ -8,9 +8,15 @@ const matchups = require('./files/race/matchups');
 const tableify = require('tableify');
 
 const seasonName = seasonNames[11];
-const firstDivision = 0;
-const lastDivision = 18;
-const roundIndex = 10;
+const roundIndex = 12;
+
+// GMAN
+// const firstDivision = 0;
+// const lastDivision = 18;
+
+// REL
+const firstDivision = 19;
+const lastDivision = 36;
 
 // Load elo
 const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));

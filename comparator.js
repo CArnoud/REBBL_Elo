@@ -46,8 +46,11 @@ const parameterSets = [{
 savetoDb = async (season) => {
     const database = new Database();
     await database.connect().catch(error => console.log(error));
+console.log('after connect');
     await season.saveGameToDatabase(database, season.getGames()[0][0][0]).catch(error => console.log(error));
+console.log('after save');
     await database.end().catch(error => console.log(error));
+console.log('after end');
 }
 
 let aSeason;
@@ -61,7 +64,7 @@ for (m in parameterSets) {
     }
 }
 
-// savetoDb(aSeason);
+savetoDb(aSeason);
 
 // save all elo checkpoints
 let predictors = [];

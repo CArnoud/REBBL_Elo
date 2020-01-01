@@ -1,23 +1,23 @@
-const mysql = require('mysql');
+const Sequelize = require('sequelize');
+const associations = require('./associations');
+
 
 class Database {
     constructor() {
-        this.connection = mysql.createConnection({
-            host     : 'localhost',
-            user     : 'root',
-            password : 'password',
-            database : 'rebbl'
-          });
+        // this.connection = require('./associations')();
     }
 
     async connect() {
-        await this.connection.connect();
-        console.log('Connected to database.');
+        console.log('Called database connect.');
+        this.connection = await associations();
+        console.log('Connection initialized: ' + (this.connection !== undefined));
+        console.log(this.connection.models);
     }
 
     async end() {
-        await this.connection.end();
-        console.log('Database connection ended.');
+        this.connection.close().then(() => {
+            console.log('Database connection ended.');
+        });        
     }
 
     async insertTeam(teamObj) {
@@ -28,21 +28,15 @@ class Database {
         //     tv: rebblObj.opponents[0].team.value,
         //     race: rebblObj.legacy ? getNormalizedRace(rebblObj.opponents[0].team.race) : rebblObj.opponents[0].team.race
         // }
-        const queryString = "INSERT INTO team SET ?";
-        const team = {
-            id: teamObj.id,
-            name: teamObj.name,
-            currentElo: 1000
-        }
-
-        this.connection.query(queryString, team, (error, result) => {
-            if (error) {
-                throw error;
-            }
-            else {
-                return;
-            }
-        });
+console.log('insertteam');
+        const model = {
+            rebbl_id: teamObj.id,
+            name: teamObj.name
+        };
+        var selector = { where: { rebbl_id: teamObj.id } };
+        const [team, created] = await this.connection.models.team.findOrCreate({where: { rebbl_id: teamObj.id}, defaults: model});
+        console.log(team);
+        console.log('created ' + created);
     }
 }
 
