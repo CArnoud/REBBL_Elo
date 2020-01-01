@@ -1,6 +1,4 @@
-const Sequelize = require('sequelize');
-const associations = require('./associations');
-
+const Sequelize = require('./sequelize_wrapper');
 
 class Database {
     constructor() {
@@ -9,7 +7,7 @@ class Database {
 
     async connect() {
         console.log('Called database connect.');
-        this.connection = await associations();
+        this.connection = Sequelize.get_connection();
         console.log('Connection initialized: ' + (this.connection !== undefined));
         console.log(this.connection.models);
     }
@@ -28,15 +26,20 @@ class Database {
         //     tv: rebblObj.opponents[0].team.value,
         //     race: rebblObj.legacy ? getNormalizedRace(rebblObj.opponents[0].team.race) : rebblObj.opponents[0].team.race
         // }
-console.log('insertteam');
+
+        // find race
+        const [race, createdRace] = await this.connection.models.race.findOrCreate({ where: { name: teamObj.race }, defaults: { name: teamObj.race } });
+
+        // assemble model
         const model = {
             rebbl_id: teamObj.id,
-            name: teamObj.name
+            name: teamObj.name,
+            raceId: race.id
         };
-        var selector = { where: { rebbl_id: teamObj.id } };
-        const [team, created] = await this.connection.models.team.findOrCreate({where: { rebbl_id: teamObj.id}, defaults: model});
-        console.log(team);
-        console.log('created ' + created);
+
+        // insert
+        const [team, createdTeam] = await this.connection.models.team.findOrCreate({where: { rebbl_id: teamObj.id}, defaults: model});
+        console.log('created ' + createdTeam);
     }
 }
 
