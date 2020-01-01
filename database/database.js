@@ -5,7 +5,7 @@ class Database {
         // this.connection = require('./associations')();
     }
 
-    async connect() {
+    connect() {
         console.log('Called database connect.');
         this.connection = Sequelize.get_connection();
         console.log('Connection initialized: ' + (this.connection !== undefined));
@@ -39,7 +39,15 @@ class Database {
 
         // insert
         const [team, createdTeam] = await this.connection.models.team.findOrCreate({where: { rebbl_id: teamObj.id}, defaults: model});
-        console.log('created ' + createdTeam);
+    }
+
+    async insertCompetition(competition, season) {
+        const model = {
+            name: competition.name,
+            seasonId: season.id
+        };
+
+        const [row, created] = await this.connection.models.competition.findOrCreate({ where: { name: competition.name }, defaults: model });
     }
 }
 

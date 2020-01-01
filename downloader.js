@@ -6,6 +6,10 @@ const REBBL = require('./utils/rebbl');
 const Game = require('./models/game').Game;
 const sequelize = require('./database/sequelize_wrapper').get_connection();
 const models = require('./database/sequelize_wrapper').get_models(sequelize);
+const Database = require('./database/database').Database;
+const database = new Database();
+database.connect();
+
 
 const seasonToStartAt = 11;
 
@@ -50,6 +54,8 @@ function downloadLeague(leagueNameOnAPI, simpleLeagueName, seasons) {
             fs.mkdir(FILES_FOLDER + seasons[i], { recursive: true }, (err) => {
                 for (let j = 0; j < divisionNames.length; j++) {                    
                     if (!divisionNames[j].includes('Swiss')) {
+                        database.insertCompetition({ name: divisionNames[j] }, { id: 1 });
+
                         request.get(REBBL.api.host + '/division/' + leagueNameOnAPI + '/' + seasons[i] + '/' + divisionNames[j], (error2, response2) => {
                             if (!error2) {
                                 const games = JSON.parse(response2.body);
