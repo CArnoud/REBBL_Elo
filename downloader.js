@@ -4,6 +4,8 @@ const fs = require('fs');
 const seasonNames = require('./utils/rebbl').seasonNames;
 const REBBL = require('./utils/rebbl');
 const Game = require('./models/game').Game;
+const sequelize = require('./database/sequelize_wrapper').get_connection();
+const models = require('./database/sequelize_wrapper').get_models(sequelize);
 
 const seasonToStartAt = 11;
 
@@ -70,7 +72,13 @@ function downloadLeague(leagueNameOnAPI, simpleLeagueName, seasons) {
     };
 }
 
-downloadLeague(REBBL.leagueNames.REL, 'REL', seasonNames);
-downloadLeague(REBBL.leagueNames.GMAN, 'GMAN', seasonNames);
-// downloadLeague(REBBL.leagueNames.BIGO, 'BIGO', seasonNames.slice(3));
+models.League.findAll().then(function (leagues) {
+    leagues.forEach((league) => {
+        downloadLeague(league.name, league.simple_name, seasonNames);
+    });
+});
 
+
+// downloadLeague(REBBL.leagueNames.REL, 'REL', seasonNames);
+// downloadLeague(REBBL.leagueNames.GMAN, 'GMAN', seasonNames);
+// downloadLeague(REBBL.leagueNames.BIGO, 'BIGO', seasonNames.slice(3));

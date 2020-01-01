@@ -2,29 +2,31 @@ const Sequelize = require('sequelize');
 
 
 const setAssociations = (sequelize) => {
-    const League = sequelize.define('league', {
+    const models = {};
+    models.League = sequelize.define('league', {
+        name: Sequelize.STRING,
+        simple_name: Sequelize.STRING
+    });
+
+    models.Season = sequelize.define('season', {
+        name: Sequelize.STRING
+    });
+
+    models.Competition = sequelize.define('competition', {
         name: Sequelize.STRING,
     });
 
-    const Season = sequelize.define('season', {
+    models.Race = sequelize.define('race', {
         name: Sequelize.STRING,
     });
 
-    const Competition = sequelize.define('competition', {
-        name: Sequelize.STRING,
-    });
-
-    const Race = sequelize.define('race', {
-        name: Sequelize.STRING,
-    });
-
-    const Team = sequelize.define('team', {
+    models.Team = sequelize.define('team', {
         rebbl_id: Sequelize.STRING,
         name: Sequelize.STRING,
         coach_id: Sequelize.STRING
     });
 
-    const Match = sequelize.define('match', {
+    models.Match = sequelize.define('match', {
         rebbl_id: Sequelize.STRING,
         name: Sequelize.STRING,
         match_id: Sequelize.STRING,
@@ -32,10 +34,10 @@ const setAssociations = (sequelize) => {
         away_team_id: Sequelize.STRING,
     });
 
-    Season.belongsTo(League);
-    Competition.belongsTo(Season);
-    Team.belongsTo(Race);
-    Match.belongsTo(Competition);
-    return sequelize;
+    models.Season.belongsTo(models.League);
+    models.Competition.belongsTo(models.Season);
+    models.Team.belongsTo(models.Race);
+    models.Match.belongsTo(models.Competition);
+    return models;
 }
 module.exports = setAssociations;

@@ -9,4 +9,8 @@ exports.get_connection = () => {
     });
     set_associations(sequelize);
     return sequelize;
-}
+};
+
+exports.get_models = (connection) => {
+    return set_associations(connection);
+};
