@@ -41,13 +41,36 @@ class Database {
         const [team, createdTeam] = await this.connection.models.team.findOrCreate({where: { rebbl_id: teamObj.id}, defaults: model});
     }
 
-    async insertCompetition(competition, season) {
+    async insertCompetition(competition, seasonName, leagueId) {
+        const [season, seasonWasCreated] = await this.connection.models.season.findOrCreate({ where: { name: seasonName, leagueId: leagueId }, defaults: { name: seasonName, leagueId: leagueId } });
+
         const model = {
             name: competition.name,
             seasonId: season.id
         };
 
-        const [row, created] = await this.connection.models.competition.findOrCreate({ where: { name: competition.name }, defaults: model });
+        const [row, created] = await this.connection.models.competition.findOrCreate({ where: { name: competition.name, seasonId: season.id }, defaults: model });
+        return row;
+    }
+
+    async getLeagues() {
+        return this.connection.models.league.findAll();
+    }
+
+    async insertGame(gameObj, competitionId) {
+        const model = {
+            round: gameObj.round,
+            match_id: gameObj.match_id,
+            competitionId: competitionId,
+            home_team_id: gameObj.teams[0].id,
+            home_team_tv: gameObj.teams[0].tv,
+            away_team_id: gameObj.teams[1].id,
+            away_team_tv: gameObj.teams[1].tv,
+            winner_id: gameObj.winner_id
+        };
+
+        const [row, created] = await this.connection.models.match.findOrCreate({ where: { round: model.round, competitionId: competitionId, home_team_id: model.home_team_id }, defaults: model });
+        return row;
     }
 }
 

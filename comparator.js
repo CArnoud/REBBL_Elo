@@ -45,7 +45,7 @@ const parameterSets = [{
 
 savetoDb = async (season) => {
     const database = new Database();
-    await database.connect().catch(error => console.log(error));
+    database.connect();
 console.log('after connect');
     await season.saveGameToDatabase(database, season.getGames()[0][0][0]).catch(error => console.log(error));
 console.log('after save');

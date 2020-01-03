@@ -4,8 +4,6 @@ const fs = require('fs');
 const seasonNames = require('./utils/rebbl').seasonNames;
 const REBBL = require('./utils/rebbl');
 const Game = require('./models/game').Game;
-const sequelize = require('./database/sequelize_wrapper').get_connection();
-const models = require('./database/sequelize_wrapper').get_models(sequelize);
 const Database = require('./database/database').Database;
 const database = new Database();
 database.connect();
@@ -45,27 +43,36 @@ function parseSeason(season) {
     return seasonResult;
 }
 
-function downloadLeague(leagueNameOnAPI, simpleLeagueName, seasons) {
+saveGamesToDatabase = async (games, competition) => {
+    for (let i = 0; i < games.length; i++) {
+        const game = Game.parse(games[i]);
+        await database.insertGame(game, competition.id);
+    }
+}
+
+downloadLeague = async (league, seasons) => {
     for (let i = seasonToStartAt; i < seasons.length; i++) {
-        request.get(REBBL.api.host + '/division/' + leagueNameOnAPI + '/' + seasons[i], (error, response) => {
+        request.get(REBBL.api.host + '/division/' + league.name + '/' + seasons[i], (error, response) => {
             const divisionNames = JSON.parse(response.body);
-            console.log(simpleLeagueName + ', season: ' + seasons[i] + ', divisions: ' + divisionNames.length);
+            console.log(league.simple_name + ', season: ' + seasons[i] + ', divisions: ' + divisionNames.length);
     
-            fs.mkdir(FILES_FOLDER + seasons[i], { recursive: true }, (err) => {
+            fs.mkdir(FILES_FOLDER + seasons[i], { recursive: true }, async (err) => {
                 for (let j = 0; j < divisionNames.length; j++) {                    
                     if (!divisionNames[j].includes('Swiss')) {
-                        database.insertCompetition({ name: divisionNames[j] }, { id: 1 });
+                        const competition = await database.insertCompetition({ name: divisionNames[j] }, seasons[i], league.id);
 
-                        request.get(REBBL.api.host + '/division/' + leagueNameOnAPI + '/' + seasons[i] + '/' + divisionNames[j], (error2, response2) => {
+                        request.get(REBBL.api.host + '/division/' + league.name + '/' + seasons[i] + '/' + divisionNames[j], async (error2, response2) => {
                             if (!error2) {
                                 const games = JSON.parse(response2.body);
                                 const season = parseSeason(games);            
                     
-                                const fileName = FILES_FOLDER + '/' + seasons[i] + '/' + simpleLeagueName + '.' + divisionNames[j] + '.json';    
+                                const fileName = FILES_FOLDER + '/' + seasons[i] + '/' + league.simple_name + '.' + divisionNames[j] + '.json';    
                                 fileHelper.writeFile(fileName, JSON.stringify(season));
+
+                                await saveGamesToDatabase(games, competition);
                             }
                             else {
-                                console.log('API error on ' + simpleLeagueName + ', ' + seasons[i] + ', ' + divisionNames[j] + ': ' + error2);
+                                console.log('API error on ' + league.simple_name + ', ' + seasons[i] + ', ' + divisionNames[j] + ': ' + error2);
                             }
                         });
                     }
@@ -78,9 +85,9 @@ function downloadLeague(leagueNameOnAPI, simpleLeagueName, seasons) {
     };
 }
 
-models.League.findAll().then(function (leagues) {
-    leagues.forEach((league) => {
-        downloadLeague(league.name, league.simple_name, seasonNames);
+database.getLeagues().then(async (leagues) => {
+    leagues.forEach(async (league) => {
+        downloadLeague(league, seasonNames);
     });
 });
 

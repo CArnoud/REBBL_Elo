@@ -27,11 +27,13 @@ const setAssociations = (sequelize) => {
     });
 
     models.Match = sequelize.define('match', {
-        rebbl_id: Sequelize.STRING,
-        name: Sequelize.STRING,
         match_id: Sequelize.STRING,
         home_team_id: Sequelize.STRING,
+        home_team_tv: Sequelize.INTEGER,
         away_team_id: Sequelize.STRING,
+        away_team_tv: Sequelize.INTEGER,
+        winner_id: Sequelize.STRING,
+        round: Sequelize.INTEGER
     });
 
     models.Season.belongsTo(models.League);
