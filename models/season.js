@@ -1,9 +1,24 @@
 const fileHelper = require('../utils/fileHelper.js');
 const Game = require('../models/game').Game;
-
+const Database = require('./database/database').Database;
 
 class Season {
-    constructor(seasonName, leagueName) {
+    constructor(seasonName, leagueName, seasonFromDb) {
+        this.database = new Database();
+        this.database.connect();
+        this.seasonName = seasonFromDb.name;
+        this.id = seasonFromDb.id;
+        this.competitions = seasonFromDb.competitions;
+        this.games = [];
+        
+        for (let i = 0; i < this.competitions.length; i++) {
+            for (let j = 0; j < this.competitions[i].games.length; j++) {
+                if (Game.isValid2(this.competitions[i].games[j])) {
+                    this.games.push(new Game(this.competitions[i].games[j]));
+                }
+            }
+        }
+
         console.log(seasonName);
         this.seasonName = seasonName;
         this.filePrefix = './files/';

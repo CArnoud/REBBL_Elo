@@ -2,7 +2,7 @@ const Sequelize = require('./sequelize_wrapper');
 
 class Database {
     constructor() {
-        // this.connection = require('./associations')();
+        
     }
 
     connect() {
@@ -55,6 +55,28 @@ class Database {
 
     async getLeagues() {
         return this.connection.models.league.findAll();
+    }
+
+    async getSeasons() {
+        return this.connection.models.season.findAll();
+    }
+
+    async getFullSeasons() {
+        const includes = {
+            include: [{
+                model: this.connection.models.competition,
+                as: 'competitions',
+                include: [{ 
+                    model: this.connection.models.matches, 
+                    as: 'games'
+                }]
+            }]        
+        };
+        return this.connection.models.league.findAll(includes);
+    }
+
+    async getCompetitions() {
+        return this.connection.models.competition.findAll();
     }
 
     async insertGame(gameObj, competitionId) {

@@ -90,8 +90,3 @@ database.getLeagues().then(async (leagues) => {
         downloadLeague(league, seasonNames);
     });
 });
-
-
-// downloadLeague(REBBL.leagueNames.REL, 'REL', seasonNames);
-// downloadLeague(REBBL.leagueNames.GMAN, 'GMAN', seasonNames);
-// downloadLeague(REBBL.leagueNames.BIGO, 'BIGO', seasonNames.slice(3));
