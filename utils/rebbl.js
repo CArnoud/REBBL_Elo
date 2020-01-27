@@ -19,7 +19,8 @@ const REBBL = {
         'season 9',
         'season 10',
         'season 11',
-        'season 12'
+        'season 12',
+        'season 13'
     ],
     
 };
