@@ -47,12 +47,14 @@ const parameterSets = [{
 }];
 
 
-database.getFullSeasons().then((seasons) => {
+database.getSeasons().then(async (seasons) => {
     let eloCalculators = [];
     for (m in parameterSets) {
         eloCalculators.push(new Elo(parameterSets[m].norm, parameterSets[m].stretchingFactor, parameterSets[m].maxChange, {}));
         for (let i = 0; i < seasons.length && i < numberOfSeasonsToLoad; i++) {
-            const season = new Season(seasonNames[i], null, seasons[i]);
+            const competitions = await database.getCompetitionsFromSeason(seasons[i].id);
+            const games = await database.getGamesFromSeason(seasons[i].id);
+            const season = new Season(seasons[i], competitions, games);
             eloCalculators[m].updateFullSeason(season);
         }
     }

@@ -61,22 +61,25 @@ class Database {
         return this.connection.models.season.findAll();
     }
 
-    async getFullSeasons() {
-        const includes = {
-            include: [{
-                model: this.connection.models.competition,
-                as: 'competitions',
-                include: [{ 
-                    model: this.connection.models.matches, 
-                    as: 'games'
-                }]
-            }]        
-        };
-        return this.connection.models.league.findAll(includes);
+    async getCompetitionsFromSeason(seasonId) {        
+        return this.connection.models.competition.findAll({ where: { seasonId: seasonId } });
     }
 
     async getCompetitions() {
         return this.connection.models.competition.findAll();
+    }
+
+    async getGamesFromCompetition(competitionId) {
+        return this.connection.models.match.findAll({ where: { competitionId: competitionId } });
+    }
+
+    async getGamesFromSeason(seasonId) {
+        const competitions = await this.getCompetitionsFromSeason(seasonId);
+        const games = [];
+        for (let i=0; i < competitions.length; i++) {
+            games.push(await this.getGamesFromCompetition(competitions[i].id)); // TODO proper await
+        }
+        return games;
     }
 
     async insertGame(gameObj, competitionId) {

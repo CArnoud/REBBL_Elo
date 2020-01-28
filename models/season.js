@@ -1,50 +1,49 @@
 const fileHelper = require('../utils/fileHelper.js');
 const Game = require('../models/game').Game;
-const Database = require('./database/database').Database;
+const Database = require('../database/database').Database;
 
 class Season {
-    constructor(seasonName, leagueName, seasonFromDb) {
+    constructor(seasonFromDb, competitionsFromDb, gamesFromDb) {
         this.database = new Database();
         this.database.connect();
         this.seasonName = seasonFromDb.name;
         this.id = seasonFromDb.id;
-        this.competitions = seasonFromDb.competitions;
+        this.competitions = competitionsFromDb;
         this.games = [];
+
+        console.log('seasonId ' + this.id);
+
+        console.log('games length ' + gamesFromDb.length);
+
+        // console.log('Competitions');
+        // console.log(JSON.stringify(competitionsFromDb));
+
+        for (let i=0; i < gamesFromDb.length; i++) {
+            // games in a season
+            for (let j=0; j < gamesFromDb[i]; j++) {
+                // games in a competition
+                if (Game.isGameValid2(gamesFromDb[i][j])) {
+                    this.games.push(new Game(gamesFromDb[i][j]));
+                }
+            }
+        }
+
+        console.log('games');
+        console.log(JSON.stringify(this.games));
+
+
+        console.log('sample game');
+        console.log(JSON.stringify(gamesFromDb[0][0]));
         
-        for (let i = 0; i < this.competitions.length; i++) {
-            for (let j = 0; j < this.competitions[i].games.length; j++) {
-                if (Game.isValid2(this.competitions[i].games[j])) {
-                    this.games.push(new Game(this.competitions[i].games[j]));
-                }
-            }
-        }
+        // for (let i = 0; i < this.competitions.length; i++) {
+        //     for (let j = 0; j < this.competitions[i].games.length; j++) {
+        //         if (Game.isValid2(this.competitions[i].games[j])) {
+        //             this.games.push(new Game(this.competitions[i].games[j]));
+        //         }
+        //     }
+        // }
 
-        console.log(seasonName);
-        this.seasonName = seasonName;
-        this.filePrefix = './files/';
-        const fileNames = fileHelper.readDir(this.getDirPath());
-        this.numberOfGames = 0;
-        this.numberOfDraws = 0;
-        this.raceMatchups = {};
-        this.raceRecords = {};
-        this.games = [];
-        for (let i = 0; i < fileNames.length; i++) {
-            const gamesList = JSON.parse(fileHelper.readFile(this.getFilePath(fileNames[i])));
-            const division = [];
-
-            for (let j = 0; j < gamesList.length; j++) {
-                const round = [];
-                for (let k = 0; k < gamesList[j].length; k++) {
-                    if (Game.isGameValid(gamesList[j][k])) {
-                        round.push(new Game(gamesList[j][k]));
-                    }
-                }
-                division.push(round);
-            }
-
-            this.games.push(division);
-        }
-        this.loadStats();
+        console.log(this.seasonName);
     }
 
     async saveGameToDatabase(connection, game) {

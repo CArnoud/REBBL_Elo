@@ -7,6 +7,7 @@ exports.get_connection = () => {
         host: 'localhost',
         dialect: 'mysql'
     });
+    // sequelize.models = set_associations(sequelize);
     set_associations(sequelize);
     return sequelize;
 };
