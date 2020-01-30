@@ -49,12 +49,16 @@ const parameterSets = [{
 
 database.getSeasons().then(async (seasonsFromDb) => {
     const seasons = [];
+    const eloCalculators = [];
+    const predictors = [];
+    const results = [];
+
     for (i in seasonsFromDb) {
         const games = await database.getGamesFromSeason(seasonsFromDb[i].id);
         seasons.push(new Season(seasonsFromDb[i], games));
     }
-
-    let eloCalculators = [];
+    seasons.sort(Season.sortSeasons);
+    
     for (m in parameterSets) {
         eloCalculators.push(new Elo(parameterSets[m].norm, parameterSets[m].stretchingFactor, parameterSets[m].maxChange, {}));
         for (let i = 0; i < seasonsFromDb.length && i < numberOfSeasonsToLoad; i++) {
@@ -63,13 +67,11 @@ database.getSeasons().then(async (seasonsFromDb) => {
     }
 
     // save all elo checkpoints
-    let predictors = [];
     for (let i in eloCalculators) {
         predictors.push(new Predictor(eloCalculators[i]));
     }
 
     // predict results using each of the elos (prediction algorithm doesnt change)
-    const results = [];
     for (let i in predictors) {
         const predictorResults = [];
 
@@ -90,8 +92,6 @@ database.getSeasons().then(async (seasonsFromDb) => {
 
         sums.push(sum);
     }
-
-    // console.log(predictors[0].eloCalculator.getElo());
 
     console.log(sums);
     database.end();
