@@ -61,15 +61,11 @@ class Elo {
     }
 
     updateFullSeason(season, weekToStopAt) {
-        const games = season.getGames();
+        const games = season.getGames();        
 
         for (let i in games) {
-            for (let j in games[i]) {
-                if (!weekToStopAt || j < weekToStopAt) {
-                    for (let k in games[i][j]) {                    
-                        this.update(games[i][j][k]);
-                    }
-                }
+            if (!weekToStopAt || games[i].round < weekToStopAt) {                        
+                this.update(games[i]);
             }
         }
     }

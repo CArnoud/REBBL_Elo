@@ -3,48 +3,30 @@ const Game = require('../models/game').Game;
 const Database = require('../database/database').Database;
 
 class Season {
-    constructor(seasonFromDb, competitionsFromDb, gamesFromDb) {
-        this.database = new Database();
-        this.database.connect();
+    constructor(seasonFromDb, gamesFromDb) {
         this.seasonName = seasonFromDb.name;
         this.id = seasonFromDb.id;
-        this.competitions = competitionsFromDb;
         this.games = [];
 
         console.log('seasonId ' + this.id);
 
-        console.log('games length ' + gamesFromDb.length);
-
-        // console.log('Competitions');
-        // console.log(JSON.stringify(competitionsFromDb));
-
         for (let i=0; i < gamesFromDb.length; i++) {
             // games in a season
-            for (let j=0; j < gamesFromDb[i]; j++) {
+            for (let j=0; j < gamesFromDb[i].length; j++) {
                 // games in a competition
-                if (Game.isGameValid2(gamesFromDb[i][j])) {
-                    this.games.push(new Game(gamesFromDb[i][j]));
-                }
+                // if (Game.isGameValid2(gamesFromDb[i][j])) {
+                this.games.push(new Game(gamesFromDb[i][j]));
+                // }
             }
         }
 
-        console.log('games');
-        console.log(JSON.stringify(this.games));
+        this.games.sort(this.sortGamesByRound);
 
-
-        console.log('sample game');
-        console.log(JSON.stringify(gamesFromDb[0][0]));
-        
-        // for (let i = 0; i < this.competitions.length; i++) {
-        //     for (let j = 0; j < this.competitions[i].games.length; j++) {
-        //         if (Game.isValid2(this.competitions[i].games[j])) {
-        //             this.games.push(new Game(this.competitions[i].games[j]));
-        //         }
-        //     }
-        // }
-
-        console.log(this.seasonName);
     }
+
+    sortGamesByRound(a, b) {
+        return a.round - b.round;
+    } 
 
     async saveGameToDatabase(connection, game) {
         await connection.insertTeam(game.getTeams()[0]);

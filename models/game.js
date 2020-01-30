@@ -10,11 +10,20 @@ function getNormalizedRace(raceNumber) {
     return result;
 }
 
+/*
+Game {
+  round: 1,
+  match_id: '2003326',
+  winner_id: '577429',
+  competitionId: 33,
+  teams: [ { id: '577429', tv: 1690 }, { id: '577429', tv: 1690 } ] }
+*/
 class Game {
     constructor(matchObj) {
         this.round = matchObj.round;
         this.match_id = matchObj.match_id;
         this.winner_id = matchObj.winner_id;
+        this.competitionId = matchObj.competitionId;
 
         // TODO: coach_id, race and name?
         this.teams = [{

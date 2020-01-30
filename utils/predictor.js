@@ -32,17 +32,13 @@ class Predictor {
         let correct = 0;
 
         for (let i in games) {
-            for (let j in games[i]) {
-                for (let k in games[i][j]) {
-                    const game = games[i][j][k];
+            const game = games[i];
 
-                    if (this.isPredictorCorrect(game)) {
-                        correct++;
-                    }
-
-                    this.eloCalculator.update(game);
-                }
+            if (this.isPredictorCorrect(game)) {
+                correct++;
             }
+
+            this.eloCalculator.update(game);
         }
 
         return correct;

@@ -52,9 +52,8 @@ database.getSeasons().then(async (seasons) => {
     for (m in parameterSets) {
         eloCalculators.push(new Elo(parameterSets[m].norm, parameterSets[m].stretchingFactor, parameterSets[m].maxChange, {}));
         for (let i = 0; i < seasons.length && i < numberOfSeasonsToLoad; i++) {
-            const competitions = await database.getCompetitionsFromSeason(seasons[i].id);
             const games = await database.getGamesFromSeason(seasons[i].id);
-            const season = new Season(seasons[i], competitions, games);
+            const season = new Season(seasons[i], games);
             eloCalculators[m].updateFullSeason(season);
         }
     }
@@ -66,43 +65,20 @@ database.getSeasons().then(async (seasons) => {
     }
 
     // predict results using each of the elos (prediction algorithm doesnt change)
-    const numberOfGames = [];
-    const numberOfTeams = [];
-    const numberOfDraws = [];
     const results = [];
-    let sumRaceMatchups;
-    let sumRaceRecords;
     for (let i in predictors) {
         const predictorResults = [];
 
         for (let j = numberOfSeasonsToLoad; j < numberOfSeasonsToSimulate + numberOfSeasonsToLoad; j++) {
-            const seasonToPredict = new Season(seasonNames[j], null, seasons[j]);
-            if (numberOfGames.length === j - numberOfSeasonsToLoad) {
-                numberOfGames.push(seasonToPredict.getNumberOfGames());
-                numberOfTeams.push(seasonToPredict.getTeamIds().length);
-                numberOfDraws.push(seasonToPredict.getNumberOfDraws());
-            }
+            const games = await database.getGamesFromSeason(seasons[j].id);
+            const seasonToPredict = new Season(seasons[j], games);
             predictorResults.push(predictors[i].predictSeason(seasonToPredict));
-
-            if (i === '0') {
-                if (sumRaceMatchups) {
-                    seasonToPredict.addRaceMatchups(sumRaceMatchups);
-                    seasonToPredict.addRaceRecords(sumRaceRecords);
-                }
-                sumRaceMatchups = seasonToPredict.getRaceMatchups();
-                sumRaceRecords = seasonToPredict.getRaceRecords();
-            }
         }
 
         results.push(predictorResults);
     }
 
     // compare results
-    console.log(numberOfTeams);
-    console.log(numberOfGames);
-    console.log(numberOfDraws);
-    // console.log(results);
-
     const sums = [];
     for (let i in results) {
         let sum = 0;
@@ -113,25 +89,6 @@ database.getSeasons().then(async (seasons) => {
         sums.push(sum);
     }
 
-    let totalGames = 0;
-    let totalDraws = 0;
-    for (let i in numberOfGames) {
-        totalGames = totalGames + numberOfGames[i];
-        totalDraws = totalDraws + numberOfDraws[i];
-    }
-
     console.log(sums);
-    console.log(totalGames);
-    console.log(totalDraws);
-
-    // console.log(sumRaceMatchups);
-    // console.log(sumRaceRecords);
-
-    fileHelper.writeFile(config.FILE.raceRecordsFileName, JSON.stringify(sumRaceRecords));
-    fileHelper.writeFile(config.FILE.raceMatchupsFileName, JSON.stringify(sumRaceMatchups));
-
-    // console.log('\n\n');
-    // for (let i=0; i < predictors.length; i++) {
-    //     console.log(predictors[i].eloCalculator.getTeamElo(2292328));
-    // }
+    database.end();
 });
