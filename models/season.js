@@ -1,14 +1,10 @@
-const fileHelper = require('../utils/fileHelper.js');
 const Game = require('../models/game').Game;
-const Database = require('../database/database').Database;
 
 class Season {
     constructor(seasonFromDb, gamesFromDb) {
         this.seasonName = seasonFromDb.name;
         this.id = seasonFromDb.id;
         this.games = [];
-
-        console.log('seasonId ' + this.id);
 
         for (let i=0; i < gamesFromDb.length; i++) {
             // games in a season
@@ -21,16 +17,11 @@ class Season {
         }
 
         this.games.sort(this.sortGamesByRound);
-
     }
 
     sortGamesByRound(a, b) {
         return a.round - b.round;
     } 
-
-    async saveGameToDatabase(connection, game) {
-        await connection.insertTeam(game.getTeams()[0]);
-    }
 
     getWinnerRace(game) {
         if (!game.getWinnerId()) {
@@ -158,36 +149,12 @@ class Season {
         return this.getDirPath() + '/' + fileName;
     }
 
-    getGame(division, round, game) {
-        return this.games[division][round][game];
-    }
-
     getGames() {
         return this.games;
     }
 
-    getTeamIds() {
-        const result = [];
-
-        for (let i in this.games) {
-            for (let j in this.games[i]) {
-                for (let k in this.games[i][j]) {
-                    const game = this.games[i][j][k];
-                    if (!result.includes(game.getTeam(0).id)) {
-                        result.push(game.getTeam(0).id);
-                    }
-                    if (!result.includes(game.getTeam(1).id)) {
-                        result.push(game.getTeam(1).id);
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
     getNumberOfGames() {
-        return this.numberOfGames;
+        return this.games.length;
     }
 
     getNumberOfDraws() {

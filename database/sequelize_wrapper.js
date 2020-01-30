@@ -5,7 +5,8 @@ const Sequelize = require('sequelize');
 exports.get_connection = () => {
     const sequelize = new Sequelize('rebbl', 'root', 'password', {
         host: 'localhost',
-        dialect: 'mysql'
+        dialect: 'mysql',
+        logging: false
     });
     // sequelize.models = set_associations(sequelize);
     set_associations(sequelize);

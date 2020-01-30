@@ -47,14 +47,18 @@ const parameterSets = [{
 }];
 
 
-database.getSeasons().then(async (seasons) => {
+database.getSeasons().then(async (seasonsFromDb) => {
+    const seasons = [];
+    for (i in seasonsFromDb) {
+        const games = await database.getGamesFromSeason(seasonsFromDb[i].id);
+        seasons.push(new Season(seasonsFromDb[i], games));
+    }
+
     let eloCalculators = [];
     for (m in parameterSets) {
         eloCalculators.push(new Elo(parameterSets[m].norm, parameterSets[m].stretchingFactor, parameterSets[m].maxChange, {}));
-        for (let i = 0; i < seasons.length && i < numberOfSeasonsToLoad; i++) {
-            const games = await database.getGamesFromSeason(seasons[i].id);
-            const season = new Season(seasons[i], games);
-            eloCalculators[m].updateFullSeason(season);
+        for (let i = 0; i < seasonsFromDb.length && i < numberOfSeasonsToLoad; i++) {
+            eloCalculators[m].updateFullSeason(seasons[i]);
         }
     }
 
@@ -70,9 +74,7 @@ database.getSeasons().then(async (seasons) => {
         const predictorResults = [];
 
         for (let j = numberOfSeasonsToLoad; j < numberOfSeasonsToSimulate + numberOfSeasonsToLoad; j++) {
-            const games = await database.getGamesFromSeason(seasons[j].id);
-            const seasonToPredict = new Season(seasons[j], games);
-            predictorResults.push(predictors[i].predictSeason(seasonToPredict));
+            predictorResults.push(predictors[i].predictSeason(seasons[j]));
         }
 
         results.push(predictorResults);
@@ -88,6 +90,8 @@ database.getSeasons().then(async (seasons) => {
 
         sums.push(sum);
     }
+
+    // console.log(predictors[0].eloCalculator.getElo());
 
     console.log(sums);
     database.end();
