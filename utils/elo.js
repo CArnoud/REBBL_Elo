@@ -30,6 +30,7 @@ class Elo {
     }
 
     getUpdatedElo(previous_elo, expected_result, actual_result) {
+        console.log('getUpdatedElo ' + previous_elo + ' ' + expected_result.toFixed(2) + ' ' + actual_result.toFixed(2) + ' => ' + (previous_elo + this.maxChange * (actual_result - expected_result)));
         return previous_elo + this.maxChange * (actual_result - expected_result);
     }
 

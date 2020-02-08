@@ -30,17 +30,9 @@ class Game {
             id: matchObj.home_team_id,
             tv: matchObj.home_team_tv
         }, {
-            id: matchObj.home_team_id,
-            tv: matchObj.home_team_tv
+            id: matchObj.away_team_id,
+            tv: matchObj.away_team_tv
         }];
-
-        // old
-        // this.league = matchObj.league;
-        // this.competition = matchObj.competition;
-        // this.round = matchObj.round;
-        // this.match_id = matchObj.match_id;
-        // this.teams = matchObj.teams;
-        // this.winner_id = matchObj.winner_id;
     }
 
     getTeams() {
@@ -91,7 +83,7 @@ class Game {
     }
 
     static isGameValid2(matchObj) {
-        return matchObj.match_id !== undefined; // need admin check
+        return matchObj.match_id !== undefined; // TODO: admin check
     }
 }
 
