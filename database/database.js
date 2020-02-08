@@ -39,6 +39,7 @@ class Database {
 
         // insert
         const [team, createdTeam] = await this.connection.models.team.findOrCreate({where: { rebbl_id: teamObj.id}, defaults: model});
+        return team;
     }
 
     async insertCompetition(competition, seasonName, leagueId) {
@@ -93,6 +94,9 @@ class Database {
             away_team_tv: gameObj.teams[1].tv,
             winner_id: gameObj.winner_id
         };
+
+        await this.insertTeam(gameObj.teams[0]);
+        await this.insertTeam(gameObj.teams[1]);
 
         const [row, created] = await this.connection.models.match.findOrCreate({ where: { round: model.round, competitionId: competitionId, home_team_id: model.home_team_id }, defaults: model });
         return row;

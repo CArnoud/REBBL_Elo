@@ -14,8 +14,10 @@ const seasonToEndAt = 14;
 
 saveGamesToDatabase = async (games, competition) => {
     for (let i = 0; i < games.length; i++) {
-        const game = Game.parse(games[i]);
-        await database.insertGame(game, competition.id);
+        if (Game.isGameValid(games[i])) {
+            const game = Game.parse(games[i]);
+            await database.insertGame(game, competition.id);
+        }
     }
 }
 
@@ -32,14 +34,21 @@ downloadLeague = async (league, seasons) => {
                 for (let j = 0; j < divisionNames.length; j++) {                    
                     if (!divisionNames[j].includes('Swiss')) {
                         const competition = await database.insertCompetition({ name: divisionNames[j] }, seasons[i], league.id);
+                        const divisionUrl = REBBL.api.host + '/division/' + league.name + '/' + seasons[i] + '/' + encodeURI(divisionNames[j]);                        
 
-                        request.get(REBBL.api.host + '/division/' + league.name + '/' + seasons[i] + '/' + divisionNames[j], async (error2, response2) => {
-                            if (!error2) {
-                                const games = JSON.parse(response2.body);
-                                await saveGamesToDatabase(games, competition);
-                            }
-                            else {
-                                console.log('API error on ' + league.simple_name + ', ' + seasons[i] + ', ' + divisionNames[j] + ': ' + error2);
+                        request.get(divisionUrl, async (error2, response2) => {
+                            try {
+                                if (!error2) {
+                                    const games = JSON.parse(response2.body);
+                                    await saveGamesToDatabase(games, competition);
+                                }
+                                else {
+                                    console.log('API error on ' + league.simple_name + ', ' + seasons[i] + ', ' + divisionNames[j] + ': ' + error2);
+                                }
+                            } catch (e) {
+                                console.log('Error on GET ' + divisionUrl);
+                                console.log(e);
+                                console.log(response2.body);
                             }
                         });
                     }

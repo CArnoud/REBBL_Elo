@@ -30,7 +30,6 @@ class Elo {
     }
 
     getUpdatedElo(previous_elo, expected_result, actual_result) {
-        console.log('getUpdatedElo ' + previous_elo + ' ' + expected_result.toFixed(2) + ' ' + actual_result.toFixed(2) + ' => ' + (previous_elo + this.maxChange * (actual_result - expected_result)));
         return previous_elo + this.maxChange * (actual_result - expected_result);
     }
 
@@ -59,6 +58,14 @@ class Elo {
 
         this.elo[team1] = this.getUpdatedElo(team1Elo, e1, team1Result);
         this.elo[team2] = this.getUpdatedElo(team2Elo, e2, team2Result);
+
+        if (this.elo[team1] < 0) {
+            console.log(team1 + ' negative Elo! ' + JSON.stringify(game.getTeam(0)));
+        }
+
+        if (this.elo[team2] < 0) {
+            console.log(team2 + ' negative Elo! ' + JSON.stringify(game.getTeam(1)));
+        }
     }
 
     updateFullSeason(season, weekToStopAt) {

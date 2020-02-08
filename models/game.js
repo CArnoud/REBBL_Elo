@@ -25,7 +25,7 @@ class Game {
         this.winner_id = matchObj.winner_id;
         this.competitionId = matchObj.competitionId;
 
-        // TODO: coach_id, race and name?
+        // TODO: coach_id
         this.teams = [{
             id: matchObj.home_team_id,
             tv: matchObj.home_team_tv
@@ -45,6 +45,10 @@ class Game {
 
     getWinnerId() {
         return this.winner_id;
+    }
+
+    gameHasBeenPlayed() {
+        return this.match_id && this.match_id.length > 0;
     }
 
     static parse(rebblObj) {
@@ -77,13 +81,12 @@ class Game {
     }
 
     static isGameValid(matchObj) {
-        return matchObj.match_id &&
-            !matchObj.teams[0].name.toLowerCase().includes('admin') &&
-            !matchObj.teams[1].name.toLowerCase().includes('admin');
-    }
-
-    static isGameValid2(matchObj) {
-        return matchObj.match_id !== undefined; // TODO: admin check
+        const teamName1 = matchObj.opponents[0].team.name.toLowerCase();
+        const teamName2 = matchObj.opponents[1].team.name.toLowerCase();
+        return !teamName1.includes('admin') &&
+            !teamName2.includes('admin') &&
+            !teamName1.includes('bye week') && 
+            !teamName2.includes('bye week');
     }
 }
 
