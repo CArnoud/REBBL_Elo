@@ -1,16 +1,13 @@
-const seasonNames = require('./utils/rebbl').seasonNames;
 const Elo = require('./utils/elo').Elo;
 const Season = require('./models/season').Season;
 const Predictor = require('./utils/predictor').Predictor;
-const config = require('./utils/config');
-const fileHelper = require('./utils/fileHelper.js');
 const Database = require('./database/database').Database;
 const database = new Database();
 database.connect();
 
 
-const numberOfSeasonsToLoad = 1;
-const numberOfSeasonsToSimulate = 11;
+const numberOfSeasonsToLoad = 1 * 3;
+const numberOfSeasonsToSimulate = 11 * 3;
 
 
 // get elo for all parameter sets
@@ -39,11 +36,6 @@ const parameterSets = [{
     stretchingFactor: 700,
     maxChange: 100,
     name: 'charlitos'
-}, {
-    norm: 1000,
-    stretchingFactor: 10000,
-    maxChange: 500,
-    name: 'crazy'
 }];
 
 
@@ -52,12 +44,18 @@ database.getSeasons().then(async (seasonsFromDb) => {
     const eloCalculators = [];
     const predictors = [];
     const results = [];
+    let totalGames = 0;
+    let gamesPredicted = 0;
 
     for (i in seasonsFromDb) {
         const games = await database.getGamesFromSeason(seasonsFromDb[i].id);
-        seasons.push(new Season(seasonsFromDb[i], games));
+        const newSeason = new Season(seasonsFromDb[i], games);
+        seasons.push(newSeason);
+        totalGames = totalGames + newSeason.getGames().length;
     }
     seasons.sort(Season.sortSeasons);
+
+    console.log(seasons.length + ' seasons found');
     
     for (m in parameterSets) {
         eloCalculators.push(new Elo(parameterSets[m].norm, parameterSets[m].stretchingFactor, parameterSets[m].maxChange, {}));
@@ -77,6 +75,10 @@ database.getSeasons().then(async (seasonsFromDb) => {
 
         for (let j = numberOfSeasonsToLoad; j < numberOfSeasonsToSimulate + numberOfSeasonsToLoad; j++) {
             predictorResults.push(predictors[i].predictSeason(seasons[j]));
+
+            if (i === '0') {
+                gamesPredicted = gamesPredicted + seasons[j].getGames().length;
+            } 
         }
 
         results.push(predictorResults);
@@ -94,5 +96,7 @@ database.getSeasons().then(async (seasonsFromDb) => {
     }
 
     console.log(sums);
+    console.log(totalGames + ' games in total.');
+    console.log(gamesPredicted + ' games predicted.');
     database.end();
 });
