@@ -11,9 +11,7 @@ class Season {
             for (let j=0; j < gamesFromDb[i].length; j++) {
                 // games in a competition
                 const game = new Game(gamesFromDb[i][j]);
-                if (game.gameHasBeenPlayed()) {
-                    this.games.push(game);
-                }
+                this.games.push(game);
             }
         }
 

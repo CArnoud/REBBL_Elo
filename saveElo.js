@@ -1,24 +1,34 @@
 const fileHelper = require('./utils/fileHelper.js');
-const seasonNames = require('./utils/rebbl').seasonNames;
 const config = require('./utils/config');
 const Elo = require('./utils/elo').Elo;
 const Season = require('./models/season').Season;
+const Database = require('./database/database').Database;
+const database = new Database();
+database.connect();
 
-const numberOfSeasonsToLoad = 12;
+
 const weekToStopAt = null;
-
-
 const eloCalculator = new Elo(config.ELO.norm, config.ELO.stretchingFactor, config.ELO.maxChange, {});
-for (let i = 0; i < seasonNames.length && i < numberOfSeasonsToLoad; i++) {
-    const season = new Season(seasonNames[i]);
-    if (i === seasonNames.length - 1 && weekToStopAt) {
-        eloCalculator.updateFullSeason(season, weekToStopAt);
-    }   
-    else {
-        eloCalculator.updateFullSeason(season);
-    }    
-}
 
-// save result to a file
-const result = eloCalculator.getElo();
-fileHelper.writeFile(config.FILE.currentEloFileName, JSON.stringify(result));
+database.getSeasons().then(async (seasonsFromDb) => {
+    const seasons = [];
+
+    for (let i = 0; i < seasonsFromDb.length; i++) {
+        const games = await database.getGamesFromSeason(seasonsFromDb[i].id);
+        seasons.push(new Season(seasonsFromDb[i], games));
+    }
+    seasons.sort(Season.sortSeasons);
+
+    for (let i = 0; i < seasons.length; i++) {
+        if (i === seasons.length - 1 && weekToStopAt) {
+            eloCalculator.updateFullSeason(seasons[i], weekToStopAt);
+        }
+        else {
+            eloCalculator.updateFullSeason(seasons[i]);
+        }
+    }
+
+    // save result to a file
+    const result = eloCalculator.getElo();
+    fileHelper.writeFile(config.FILE.currentEloFileName, JSON.stringify(result));
+});

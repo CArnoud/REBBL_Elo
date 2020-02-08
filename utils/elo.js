@@ -34,37 +34,41 @@ class Elo {
     }
 
     update(game) {
-        const team1 = game.getTeam(0).id;
-        let team1Elo = this.getTeamElo(team1);
-        let team1Result = 0.5;
+        if (game.gameHasBeenPlayed()) {
+            const team1 = game.getTeam(0).id;
+            let team1Elo = this.getTeamElo(team1);
+            let team1Result = 0.5;
 
-        const team2 = game.getTeam(1).id;
-        let team2Elo = this.getTeamElo(team2);
-        let team2Result = 0.5;
+            const team2 = game.getTeam(1).id;
+            let team2Elo = this.getTeamElo(team2);
+            let team2Result = 0.5;
 
-        const winner = game.getWinnerId();
+            const winner = game.getWinnerId();
 
-        if (winner === team1) {
-            team1Result = 1;
-            team2Result = 0;
-        }
-        else if (winner === team2) {
-            team1Result = 0;
-            team2Result = 1;
-        }
+            if (winner === team1) {
+                team1Result = 1;
+                team2Result = 0;
+            }
+            else if (winner === team2) {
+                team1Result = 0;
+                team2Result = 1;
+            }
 
-        const e1 = this.getExpectedResult(team1Elo, team2Elo);
-        const e2 = this.getExpectedResult(team2Elo, team1Elo);
+            const e1 = this.getExpectedResult(team1Elo, team2Elo);
+            const e2 = this.getExpectedResult(team2Elo, team1Elo);
 
-        this.elo[team1] = this.getUpdatedElo(team1Elo, e1, team1Result);
-        this.elo[team2] = this.getUpdatedElo(team2Elo, e2, team2Result);
+            this.elo[team1] = this.getUpdatedElo(team1Elo, e1, team1Result);
+            this.elo[team2] = this.getUpdatedElo(team2Elo, e2, team2Result);
 
-        if (this.elo[team1] < 0) {
-            console.log(team1 + ' negative Elo! ' + JSON.stringify(game.getTeam(0)));
-        }
+            if (this.elo[team1] < 0) {
+                console.log(team1 + ' negative Elo! ' + JSON.stringify(game.getTeam(0)));
+            }
 
-        if (this.elo[team2] < 0) {
-            console.log(team2 + ' negative Elo! ' + JSON.stringify(game.getTeam(1)));
+            if (this.elo[team2] < 0) {
+                console.log(team2 + ' negative Elo! ' + JSON.stringify(game.getTeam(1)));
+            }
+        } else {
+            console.log('Atempt to update Elo but game has not been played ' + JSON.stringify(game));
         }
     }
 
