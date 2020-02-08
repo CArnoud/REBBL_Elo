@@ -7,7 +7,7 @@ const Game = require('./models/game').Game;
 
 
 const FILES_FOLDER = 'files/'
-const seasonName = seasonNames[11];
+const seasonName = seasonNames[12];
 
 
 function parseSeason(season) {

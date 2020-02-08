@@ -1,6 +1,4 @@
 const request = require('request');
-const fileHelper = require('./utils/fileHelper.js')
-const fs = require('fs');
 const seasonNames = require('./utils/rebbl').seasonNames;
 const REBBL = require('./utils/rebbl');
 const Game = require('./models/game').Game;
