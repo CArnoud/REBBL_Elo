@@ -42,6 +42,14 @@ class Database {
         return team;
     }
 
+    async getTeamByRebblId(rebbl_id) {
+        return this.connection.models.team.findAll({ where: { rebbl_id: rebbl_id } }); 
+    }
+
+    async getMatchByRebblId(rebbl_id) {
+        return this.connection.models.match.findAll({ where: { match_id: rebbl_id } });
+    }
+
     async insertCompetition(competition, seasonName, leagueId) {
         const [season, seasonWasCreated] = await this.connection.models.season.findOrCreate({ where: { name: seasonName, leagueId: leagueId }, defaults: { name: seasonName, leagueId: leagueId } });
 
@@ -78,7 +86,7 @@ class Database {
         const competitions = await this.getCompetitionsFromSeason(seasonId);
         const games = [];
         for (let i=0; i < competitions.length; i++) {
-            games.push(await this.getGamesFromCompetition(competitions[i].id)); // TODO proper await
+            games.push(await this.getGamesFromCompetition(competitions[i].id));
         }
         return games;
     }
@@ -99,6 +107,25 @@ class Database {
         await this.insertTeam(gameObj.teams[1]);
 
         const [row, created] = await this.connection.models.match.findOrCreate({ where: { round: model.round, competitionId: competitionId, home_team_id: model.home_team_id }, defaults: model });
+        return row;
+    }
+
+    async insertElo(teamId, matchId, rating, previous_rating, expected_result, actual_result) {
+        const model = {
+            rating: rating,
+            previous_rating: previous_rating,
+            expected_result: expected_result,
+            actual_result: actual_result,
+            teamId: teamId,
+            matchId: matchId
+        };
+
+        const where = {
+            teamId: teamId,
+            matchId: matchId
+        };
+
+        const [row, created] = await this.connection.models.elo.findOrCreate({ where: where, defaults: model });
         return row;
     }
 }

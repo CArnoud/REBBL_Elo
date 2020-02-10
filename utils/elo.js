@@ -33,14 +33,14 @@ class Elo {
         return previous_elo + this.maxChange * (actual_result - expected_result);
     }
 
-    update(game) {
+    async update(game, database) {
         if (game.gameHasBeenPlayed()) {
             const team1 = game.getTeam(0).id;
-            let team1Elo = this.getTeamElo(team1);
+            const team1Elo = this.getTeamElo(team1);
             let team1Result = 0.5;
 
             const team2 = game.getTeam(1).id;
-            let team2Elo = this.getTeamElo(team2);
+            const team2Elo = this.getTeamElo(team2);
             let team2Result = 0.5;
 
             const winner = game.getWinnerId();
@@ -67,17 +67,25 @@ class Elo {
             if (this.elo[team2] < 0) {
                 console.log(team2 + ' negative Elo! ' + JSON.stringify(game.getTeam(1)));
             }
+
+            if (database) {
+                const dbTeam1 = await database.getTeamByRebblId(game.getTeam(0).id);
+                const dbTeam2 = await database.getTeamByRebblId(game.getTeam(1).id);
+                const dbGame = await database.getMatchByRebblId(game.match_id);
+                await database.insertElo(dbTeam1[0].get('id'), dbGame[0].get('id'), this.elo[team1], team1Elo, e1, team1Result);
+                await database.insertElo(dbTeam2[0].get('id'), dbGame[0].get('id'), this.elo[team2], team2Elo, e2, team2Result);
+            }
         } else {
             console.log('Atempt to update Elo but game has not been played ' + JSON.stringify(game));
         }
     }
 
-    updateFullSeason(season, weekToStopAt) {
+    async updateFullSeason(season, database, weekToStopAt) {
         const games = season.getGames();        
 
         for (let i in games) {
             if (!weekToStopAt || games[i].round < weekToStopAt) {                        
-                this.update(games[i]);
+                await this.update(games[i], database);
             }
         }
     }

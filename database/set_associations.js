@@ -36,10 +36,19 @@ const setAssociations = (sequelize) => {
         round: Sequelize.INTEGER
     });
 
+    models.Elo = sequelize.define('elo', {
+        rating: Sequelize.INTEGER,
+        previous_rating: Sequelize.INTEGER,
+        expected_result: Sequelize.FLOAT,
+        actual_result: Sequelize.FLOAT
+    });
+
     models.Season.belongsTo(models.League);
     models.Competition.belongsTo(models.Season);
     models.Team.belongsTo(models.Race);
     models.Match.belongsTo(models.Competition);
+    models.Elo.belongsTo(models.Team);
+    models.Elo.belongsTo(models.Match);
     return models;
 }
 module.exports = setAssociations;

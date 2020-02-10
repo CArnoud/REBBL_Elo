@@ -21,14 +21,12 @@ database.getSeasons().then(async (seasonsFromDb) => {
 
     for (let i = 0; i < seasons.length; i++) {
         if (i === seasons.length - 1 && weekToStopAt) {
-            eloCalculator.updateFullSeason(seasons[i], weekToStopAt);
+            await eloCalculator.updateFullSeason(seasons[i], database, weekToStopAt);
         }
         else {
-            eloCalculator.updateFullSeason(seasons[i]);
+            await eloCalculator.updateFullSeason(seasons[i], database);
         }
     }
-
-    // save result to a file
-    const result = eloCalculator.getElo();
-    fileHelper.writeFile(config.FILE.currentEloFileName, JSON.stringify(result));
+}).then(() => {
+    database.end();
 });
