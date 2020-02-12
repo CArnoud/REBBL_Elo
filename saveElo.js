@@ -24,9 +24,10 @@ database.getSeasons().then(async (seasonsFromDb) => {
             await eloCalculator.updateFullSeason(seasons[i], database, weekToStopAt);
         }
         else {
-            await eloCalculator.updateFullSeason(seasons[i], database);
+            // await eloCalculator.updateFullSeason(seasons[i], database);
+            await eloCalculator.updateFullSeason(seasons[i]);
         }
     }
-}).then(() => {
-    database.end();
+
+    await eloCalculator.saveAllRatings(database);
 });

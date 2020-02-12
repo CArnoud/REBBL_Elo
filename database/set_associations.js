@@ -43,12 +43,18 @@ const setAssociations = (sequelize) => {
         actual_result: Sequelize.FLOAT
     });
 
+    models.CurrentElo = sequelize.define('current-elo', {
+        rating: Sequelize.INTEGER
+    });
+
     models.Season.belongsTo(models.League);
     models.Competition.belongsTo(models.Season);
     models.Team.belongsTo(models.Race);
     models.Match.belongsTo(models.Competition);
     models.Elo.belongsTo(models.Team);
     models.Elo.belongsTo(models.Match);
+    models.CurrentElo.belongsTo(models.Team);
     return models;
 }
+
 module.exports = setAssociations;

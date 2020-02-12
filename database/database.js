@@ -128,6 +128,20 @@ class Database {
         const [row, created] = await this.connection.models.elo.findOrCreate({ where: where, defaults: model });
         return row;
     }
+
+    async insertCurrentElo(teamId, rating) {
+        const model = {
+            rating: rating,
+            teamId: teamId
+        };
+
+        const where = {
+            teamId: teamId
+        }
+
+        const [row, created] = await this.connection.models['current-elo'].findOrCreate({ where: where, defaults: model });
+        return row;
+    }
 }
 
 exports.Database = Database;

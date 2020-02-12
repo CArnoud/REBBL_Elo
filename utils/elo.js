@@ -93,6 +93,13 @@ class Elo {
     getElo() {
         return this.elo;
     }
+
+    async saveAllRatings(database) {
+        Object.keys(this.elo).forEach(async (key) => {
+            const dbTeam = await database.getTeamByRebblId(key);
+            await database.insertCurrentElo(dbTeam[0].get('id'), this.elo[key]);
+        });
+    }
 };
 
 exports.Elo = Elo;
