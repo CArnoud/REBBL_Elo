@@ -46,6 +46,10 @@ class Database {
         return this.connection.models.team.findAll({ where: { rebbl_id: rebbl_id } }); 
     }
 
+    async getTeam(team_id) {
+        return this.connection.models.team.findAll({ where: { id: team_id } });
+    }
+
     async getMatchByRebblId(rebbl_id) {
         return this.connection.models.match.findAll({ where: { match_id: rebbl_id } });
     }
@@ -82,11 +86,24 @@ class Database {
         return this.connection.models.match.findAll({ where: { competitionId: competitionId } });
     }
 
+    async getGamesFromCompetitionAndRound(competitionId, round) {
+        return this.connection.models.match.findAll({ where: { competitionId: competitionId, round: round } });
+    }
+
     async getGamesFromSeason(seasonId) {
         const competitions = await this.getCompetitionsFromSeason(seasonId);
         const games = [];
         for (let i=0; i < competitions.length; i++) {
             games.push(await this.getGamesFromCompetition(competitions[i].id));
+        }
+        return games;
+    }
+
+    async getGamesFromRound(seasonId, round) {
+        const competitions = await this.getCompetitionsFromSeason(seasonId);
+        const games = [];
+        for (let i = 0; i < competitions.length; i++) {
+            games.push(await this.getGamesFromCompetitionAndRound(competitions[i].id, round));
         }
         return games;
     }
@@ -141,6 +158,10 @@ class Database {
 
         const [row, created] = await this.connection.models['current-elo'].findOrCreate({ where: where, defaults: model });
         return row;
+    }
+
+    async getCurrentElos() {
+        return await this.connection.models['current-elo'].findAll({ raw: true });
     }
 }
 
