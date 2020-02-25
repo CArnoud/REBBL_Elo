@@ -185,6 +185,10 @@ class Database {
         const [row, created] = await this.connection.models.prediction.findOrCreate({ where: where, defaults: model });
         return row;
     }
+
+    async getPredictionFromGame(gameFromDb) {
+        return await this.connection.models.prediction.findAll({ where: { matchId: gameFromDb.id }, raw: true });
+    }
 }
 
 exports.Database = Database;

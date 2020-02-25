@@ -1,89 +1,66 @@
-const fileHelper = require('../utils/fileHelper.js');
-const seasonNames = require('../utils/rebbl').seasonNames;
-const config = require('../utils/config');
-const Elo = require('../utils/elo').Elo;
-const Game = require('../models/game').Game;
-const matchups = require('../files/race/matchups');
+const Database = require('../database/database').Database;
+const database = new Database();
+database.connect();
 
+const seasonId = 16; // 13(REL), 16 (BIGO), 27 (GMAN)
+const round = 7;
 
-const seasonName = seasonNames[11];
-const roundIndex = 11;
-
-
-// Load elo
-const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));
-const eloCalculator = new Elo(config.ELO.norm, config.ELO.stretchingFactor, config.ELO.maxChange, currentElo);
-
-// Load divisions
-const directoryPath = config.FILE.filePath + seasonName;
-const fileNames = fileHelper.readDir(directoryPath);
-
-// Load predictions
-const predictions = JSON.parse(fileHelper.readFile(config.FILE.predictionFileName));
-
+let correctPicks = 0;
 let totalGames = 0;
-let totalCorrect = 0;
 let totalDraws = 0;
-let gamesToBePlayed = 0;
-let biggestUpsetString = "";
-let biggestUpsetChance = 100;
+let gamesPlayed = 0;
+let predictionScore = 0;
 
-for (let i=0; i < fileNames.length; i++) {
-    const rounds = JSON.parse(fileHelper.readFile(directoryPath + '/' + fileNames[i]));
-    const games = rounds[roundIndex];
-    let numberOfGames = 0;
-    let correctPicks = 0;
-    let draws = 0;
-    gamesToBePlayed = gamesToBePlayed + games.length;
+// Load Elo
+database.getCompetitionsFromSeason(seasonId).then(async (competitions) => {
+    for (let i in competitions) {
+        const games = await database.getGamesFromCompetitionAndRound(competitions[i].id, round);
 
-    // Proccess games
-    for (let j in games) {
-        const currentGame = new Game(games[j]);
-        const teams = currentGame.getTeams();
+        for (let j in games) {
+            totalGames++;
+            const prediction = (await database.getPredictionFromGame(games[j]))[0];
+            let winnerId = null;
+            let correct = false;
 
-        if (Game.isGameValid(games[j])) {
-            // game has been played and is not an admin game
-            if (currentGame.getWinnerId() === getFavoriteId(teams)) {
-                correctPicks++;
+            if (games[j].winner_id) {
+                winnerId = (await database.getTeamByRebblId(games[j].winner_id))[0].id;
+            } else {
+                totalDraws++;
             }
-            else {
-                if (!currentGame.getWinnerId()) {
-                    totalDraws++;
-                    draws++;
-                }
+
+            if (games[j].match_id) {
+                gamesPlayed++;
+
+                if (winnerId == prediction.predicted_winner_id) {
+                    correct = true;
+                    correctPicks++;
+                    predictionScore = predictionScore + prediction.expected_result;
+                } 
                 else {
-                    const underdog = getFavoriteId(teams) === teams[0].id ? teams[1] : teams[0];
-                    const chance = eloCalculator.getExpectedResult(eloCalculator.getTeamElo(underdog.id), eloCalculator.getTeamElo(getFavoriteId(teams)));
-                    if (chance < biggestUpsetChance) {
-                        biggestUpsetString = underdog.name + ' ' + chance;
-                        biggestUpsetChance = chance;
-                        console.log(biggestUpsetString);
-                    }
+                    predictionScore = predictionScore - prediction.expected_result;
                 }
+            } else {
+                predictionScore = predictionScore + 0.5 * prediction.expected_result;
             }
 
-            numberOfGames++;
+            
+
+            console.log('Game ' + games[j].id + 
+                ', winner ' + winnerId + 
+                ', predictedWinner ' + prediction.predicted_winner_id +
+                ', round ' + games[j].round +
+                ', correct ' + correct);
         }
-        else {
-            if (currentGame.match_id) {
-                gamesToBePlayed--; // removes admin games
-            }
-        }        
     }
 
-    console.log(fileNames[i] + ': ' + correctPicks + '-' + draws + '-' + (numberOfGames - correctPicks - draws));
-    totalGames = totalGames + numberOfGames;
-    totalCorrect = totalCorrect + correctPicks;
-    numberOfGames = 0;
-    correctPicks = 0;
-}
+    console.log('\ngames: ' + totalGames +
+        ', draws: ' + totalDraws +
+        ', correct: ' + correctPicks +
+        ', ratio: ' + (correctPicks / gamesPlayed * 100).toFixed(2) + '%' +
+        ', ratio (no draws): ' + (correctPicks / (gamesPlayed - totalDraws) * 100).toFixed(2) + '%' + 
+        ', games played: ' + gamesPlayed +
+        ', prediction score: ' + predictionScore
+    );
 
-console.log('Total: \n' + totalCorrect + ' out of ' + totalGames + ' (' + (totalCorrect/totalGames).toFixed(4) + ')');
-console.log(totalCorrect + ' out of ' + (totalGames - totalDraws) + ' without draws (' + (totalCorrect/(totalGames-totalDraws)).toFixed(4) + ')');
-console.log((gamesToBePlayed - totalGames) + ' left to be played');
-
-function getFavoriteId(teams) {
-    const elo1 = eloCalculator.getTeamElo(teams[0].id);
-    const elo2 = eloCalculator.getTeamElo(teams[1].id);
-    return elo1 > elo2 ? teams[0].id : teams[1].id;
-}
+    database.end();
+});

@@ -10,7 +10,7 @@ const database = new Database();
 database.connect();
 
 
-const seasonId = 13; // 13(REL), 16 (BIGO), 27 (GMAN)
+const seasonId = 27; // 13(REL), 16 (BIGO), 27 (GMAN)
 const round = 7;
 
 const mainPostLink = 'https://news.rebbl.net/post/rebbl-elo-week-6-review-791';
