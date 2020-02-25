@@ -17,7 +17,11 @@ sequelize.sync()
             {
                 name: REBBL.leagueNames.BIGO,
                 simple_name: 'BIGO'
-            }
+            },
+            // {
+            //     name: REBBL.leagueNames.PLAYOFFS,
+            //     simple_name: 'PLAYOFFS'
+            // }
         ], {
             fields: ["id", "name", "simple_name"],
             updateOnDuplicate: ["name"]

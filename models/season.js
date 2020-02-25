@@ -25,6 +25,7 @@ class Season {
     static sortSeasons(a, b) {
         const aNumber = parseInt(a.seasonName.split('season ')[1]);
         const bNumber = parseInt(b.seasonName.split('season ')[1]);
+
         return aNumber - bNumber;
     }
 
