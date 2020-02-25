@@ -1,8 +1,8 @@
 const CONFIG = {
     ELO: {
-        norm: 1000,
-        stretchingFactor: 300,
-        maxChange: 30
+        norm: 1500,
+        stretchingFactor: 400,
+        maxChange: 40
     },
     FILE: {
         filePath: './files/',

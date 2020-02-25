@@ -9,7 +9,7 @@ class Database {
         console.log('Called database connect.');
         this.connection = Sequelize.get_connection();
         console.log('Connection initialized: ' + (this.connection !== undefined));
-        console.log(this.connection.models);
+        // console.log(this.connection.models);
     }
 
     async end() {
@@ -124,7 +124,9 @@ class Database {
         await this.insertTeam(gameObj.teams[1]);
 
         const [row, created] = await this.connection.models.match.findOrCreate({ where: { round: model.round, competitionId: competitionId, home_team_id: model.home_team_id }, defaults: model });
-        return row;
+        if (!created && row.match_id != model.match_id) {
+            await this.connection.models.match.update(model, { where: { id: row.id } });
+        }
     }
 
     async insertElo(teamId, matchId, rating, previous_rating, expected_result, actual_result) {
@@ -157,6 +159,9 @@ class Database {
         }
 
         const [row, created] = await this.connection.models['current-elo'].findOrCreate({ where: where, defaults: model });
+        if (!created && model.rating != row.rating) {
+            await this.connection.models['current-elo'].update(model, { where: { id: row.id } });
+        }
         return row;
     }
 

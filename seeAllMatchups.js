@@ -1,97 +1,90 @@
 const fileHelper = require('./utils/fileHelper.js');
-const seasonNames = require('./utils/rebbl').seasonNames;
 const config = require('./utils/config');
 const Elo = require('./utils/elo').Elo;
 const Game = require('./models/game').Game;
-const matchups = require('./files/race/matchups');
 
 const tableify = require('tableify');
 
-const seasonName = seasonNames[11];
-const roundIndex = 12;
+const Database = require('./database/database').Database;
+const database = new Database();
+database.connect();
 
-// GMAN
-// const firstDivision = 0;
-// const lastDivision = 18;
 
-// REL
-const firstDivision = 19;
-const lastDivision = 36;
+const seasonId = 16; // 13, 16 (bigo), 27 (GMAN)
+const round = 7;
 
-// Load elo
-const currentElo = JSON.parse(fileHelper.readFile(config.FILE.currentEloFileName));
-const eloCalculator = new Elo(config.ELO.norm, config.ELO.stretchingFactor, config.ELO.maxChange, currentElo);
+const mainPostLink = 'https://news.rebbl.net/post/rebbl-elo-week-6-review-791';
 
-// Load divisions
-const directoryPath = config.FILE.filePath + seasonName;
-const fileNames = fileHelper.readDir(directoryPath);
 
 // Result
 let html = "";
 
-for (let i=firstDivision; i < lastDivision + 1; i++) {
-    const rounds = JSON.parse(fileHelper.readFile(directoryPath + '/' + fileNames[i]));
-    const games = rounds[roundIndex];
+// Load Elo
+database.getCompetitionsFromSeason(seasonId).then(async (competitions) => {
+    const currentElo = await database.getCurrentElos();
+    const eloCalculator = new Elo(config.ELO.norm, config.ELO.stretchingFactor, config.ELO.maxChange, currentElo);
 
-    const table = [];
+    for (let i in competitions) {
+        const table = [];
+        const games = await database.getGamesFromCompetitionAndRound(competitions[i].id, round);
 
-    // Proccess games
-    for (let j in games) {
-        const currentGame = new Game(games[j]);
-        const teams = currentGame.getTeams();
+        for (let j in games) {
+            const currentGame = new Game(games[j]);
+            const team0 = await database.getTeamByRebblId(currentGame.getTeams()[0].id);
+            const team1 = await database.getTeamByRebblId(currentGame.getTeams()[1].id);
+            const teams = [team0[0], team1[0]];
 
-        // console.log(
-        //     getTeamString(teams[0], teams[1]) +
-        //     getTeamString(teams[1], teams[0]) +
-        //     ''
-        // );
-
-        if (!teams[0].name.toLowerCase().includes('admin') &&
-            !teams[1].name.toLowerCase().includes('admin')) {
-            if (j > 0) {
-                table.push({});
+            if (!teams[0].name.toLowerCase().includes('admin') &&
+                !teams[1].name.toLowerCase().includes('admin')) {
+                if (j > 0) {
+                    table.push({});
+                }
+                table.push(getTeamRow(teams[0], teams[1], eloCalculator));
+                table.push(getTeamRow(teams[1], teams[0], eloCalculator));
             }
-            table.push(getTeamRow(teams[0], teams[1]));
-            table.push(getTeamRow(teams[1], teams[0]));
         }
+
+        html = html +
+            getDivisionNameHtml(i, competitions[i].name) +
+            tableify(table); 
     }
 
-    html = html + 
-        getDivisionNameHtml(i) + 
-        tableify(table); 
-}
+    html = addHtmlStyle(html);
+    fileHelper.writeFile(config.FILE.htmlPredictionsFilePath, html);
+    database.end();
+});
 
-html = addHtmlStyle(html);
-fileHelper.writeFile(config.FILE.htmlPredictionsFilePath, html);
+// function getRaceMatchupString(teams) {
+//     const raceIndex = teams[0].race > teams[1].race ? teams[1].race + teams[0].race : teams[0].race + teams[1].race;
+//     if (matchups[raceIndex]) {
+//         return matchups[raceIndex][teams[0].race] + '-' +
+//         matchups[raceIndex]['draw'] + '-' +
+//         matchups[raceIndex][teams[1].race] + ' vs ' + teams[1].race;
+//     }
+//     else {
+//         return "?-?-?";
+//     }
+// }
 
-function getRaceMatchupString(teams) {
-    const raceIndex = teams[0].race > teams[1].race ? teams[1].race + teams[0].race : teams[0].race + teams[1].race;
-    if (matchups[raceIndex]) {
-        return matchups[raceIndex][teams[0].race] + '-' +
-        matchups[raceIndex]['draw'] + '-' +
-        matchups[raceIndex][teams[1].race] + ' vs ' + teams[1].race;
-    }
-    else {
-        return "?-?-?";
-    }
-}
-
-function getTeamRow(team, opponent) {
+function getTeamRow(team, opponent, eloCalculator) {
     const elo = eloCalculator.getTeamElo(team.id);
     const oppElo = eloCalculator.getTeamElo(opponent.id);
 
+    // console.log(JSON.stringify(team));
+    // console.log(team.rebbl_id + ' rating ' + elo);
+
     return {
-        Name: team.name,
-        Race: team.race,
-        // TV: team.tv.toString(),
+        Team: "<a href=\"https://rebbl.net/rebbl/team/" + team.rebbl_id + "\">" + team.name + "</a>",
+        Race: team.raceId, // TODO translate
+        // TV: team.tv.toString(), // TODO
         "Elo Rating": Math.round(elo),
-        "Race Matchup (REL and GMAN history)": getRaceMatchupString([team, opponent]),
+        // "Race Matchup (REL and GMAN history)": getRaceMatchupString([team, opponent]), // TODO
         "Expected Result": (eloCalculator.getExpectedResult(elo, oppElo)*100).toFixed(2) + '%',       
     }
 }
 
-function getDivisionNameHtml(index) {
-    let result = (index > firstDivision ? "<p>&nbsp;</p>" : "") + "<h3 class='division-name'>" + fileNames[index] + "</h3>";
+function getDivisionNameHtml(index, competitionName) {
+    let result = (index > 0 ? "<p>&nbsp;</p>" : "") + "<h3 class='division-name'>" + competitionName + "</h3>";
     return result.replace(".json", "").replace(".Season 12", "");
 }
 
@@ -100,6 +93,10 @@ function addHtmlStyle(html) {
     result = result + html.replace(new RegExp("<table>", "g"), "<table class='division'>");
     result = result + "</table></body></html>";
     return result;
+}
+
+function getPostIntroductionText() {
+    return '<p>For a review from the previous week, please read this <a href=' + mainPostLink + ">post</a></p>";
 }
 
 function getHtmlFileBeggining() {
@@ -138,5 +135,6 @@ function getHtmlFileBeggining() {
     "</style> " +
     "</head> " +
     "<body> " +
+    getPostIntroductionText() + 
     "<table>";
 }

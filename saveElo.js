@@ -1,4 +1,3 @@
-const fileHelper = require('./utils/fileHelper.js');
 const config = require('./utils/config');
 const Elo = require('./utils/elo').Elo;
 const Season = require('./models/season').Season;
@@ -24,8 +23,7 @@ database.getSeasons().then(async (seasonsFromDb) => {
             await eloCalculator.updateFullSeason(seasons[i], database, weekToStopAt);
         }
         else {
-            // await eloCalculator.updateFullSeason(seasons[i], database);
-            await eloCalculator.updateFullSeason(seasons[i]);
+            await eloCalculator.updateFullSeason(seasons[i], database);
         }
     }
 
