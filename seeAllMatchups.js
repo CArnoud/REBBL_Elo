@@ -10,7 +10,7 @@ const database = new Database();
 database.connect();
 
 
-const seasonId = 27; // 13(REL), 16 (BIGO), 27 (GMAN)
+const seasonId = 16; // 13(REL), 16 (BIGO), 27 (GMAN)
 const round = 7;
 
 const mainPostLink = 'https://news.rebbl.net/post/rebbl-elo-week-6-review-791';
@@ -42,8 +42,6 @@ database.getCompetitionsFromSeason(seasonId).then(async (competitions) => {
                 if (j > 0) {
                     table.push({});
                 }
-
-
 
                 table.push(getTeamRow(teams[0], teams[1], eloCalculator, race0.name));
                 table.push(getTeamRow(teams[1], teams[0], eloCalculator, race1.name));
@@ -121,7 +119,7 @@ function addHtmlStyle(html) {
 }
 
 function getPostIntroductionText() {
-    return '<p>For a review from the previous week, please read this <a href=' + mainPostLink + ">post</a></p>";
+    return '<p>For a review from the previous week, please read this <a href=' + mainPostLink + ">post</a>.</p>";
 }
 
 function getHtmlFileBeggining() {

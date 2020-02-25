@@ -10,7 +10,8 @@ const CONFIG = {
         raceMatchupsFileName: 'files/race/matchups.json',
         raceRecordsFileName: 'files/race/records.json',
         predictionFileName: 'files/predictions/predictions.json',
-        htmlPredictionsFilePath: 'html/predictions.html'
+        htmlPredictionsFilePath: 'html/predictions.html',
+        weekReviewFilePath: 'html/review.html'
     }
 };
 
