@@ -168,6 +168,23 @@ class Database {
     async getCurrentElos() {
         return await this.connection.models['current-elo'].findAll({ raw: true });
     }
+
+    async insertPrediction(home_team_rating, away_team_rating, predicted_winner_id, expected_result, gameId) {
+        const model = {
+            home_team_rating: home_team_rating,
+            away_team_rating: away_team_rating,
+            predicted_winner_id: predicted_winner_id,
+            expected_result: expected_result,
+            matchId: gameId
+        };
+
+        const where = {
+            matchId: gameId
+        };
+
+        const [row, created] = await this.connection.models.prediction.findOrCreate({ where: where, defaults: model });
+        return row;
+    }
 }
 
 exports.Database = Database;

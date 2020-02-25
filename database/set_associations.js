@@ -47,6 +47,13 @@ const setAssociations = (sequelize) => {
         rating: Sequelize.INTEGER
     });
 
+    models.Prediction = sequelize.define('prediction', {
+        home_team_rating: Sequelize.INTEGER,
+        away_team_rating: Sequelize.INTEGER,
+        predicted_winner_id: Sequelize.STRING,
+        expected_result: Sequelize.FLOAT
+    });
+
     models.Season.belongsTo(models.League);
     models.Competition.belongsTo(models.Season);
     models.Team.belongsTo(models.Race);
@@ -54,6 +61,7 @@ const setAssociations = (sequelize) => {
     models.Elo.belongsTo(models.Team);
     models.Elo.belongsTo(models.Match);
     models.CurrentElo.belongsTo(models.Team);
+    models.Prediction.belongsTo(models.Match);
     return models;
 }
 

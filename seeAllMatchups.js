@@ -10,7 +10,7 @@ const database = new Database();
 database.connect();
 
 
-const seasonId = 16; // 13, 16 (bigo), 27 (GMAN)
+const seasonId = 13; // 13(REL), 16 (BIGO), 27 (GMAN)
 const round = 7;
 
 const mainPostLink = 'https://news.rebbl.net/post/rebbl-elo-week-6-review-791';
@@ -39,8 +39,10 @@ database.getCompetitionsFromSeason(seasonId).then(async (competitions) => {
                 if (j > 0) {
                     table.push({});
                 }
-                table.push(getTeamRow(teams[0], teams[1], eloCalculator));
-                table.push(getTeamRow(teams[1], teams[0], eloCalculator));
+                table.push(getTeamRow(teams[0], teams[1], eloCalculator, database));
+                table.push(getTeamRow(teams[1], teams[0], eloCalculator, database));
+
+                await savePrediction(database, games[j].id, teams[0].id, teams[1].id, eloCalculator);
             }
         }
 
@@ -65,6 +67,23 @@ database.getCompetitionsFromSeason(seasonId).then(async (competitions) => {
 //         return "?-?-?";
 //     }
 // }
+
+async function savePrediction(database, gameId, home_team_id, away_team_id, eloCalculator) {
+    const home_elo = eloCalculator.getTeamElo(home_team_id);
+    const away_elo = eloCalculator.getTeamElo(away_team_id);
+    let winners_expected_result = 0.5;
+    let predicted_winner_id = null;
+
+    if (home_elo > away_elo) {
+        predicted_winner_id = home_team_id;
+        winners_expected_result = eloCalculator.getExpectedResult(home_elo, away_elo);
+    } else if (away_elo > home_elo) {
+        predicted_winner_id = away_team_id;
+        winners_expected_result = eloCalculator.getExpectedResult(away_elo, home_elo);
+    }
+
+    await database.insertPrediction(home_elo, away_elo, predicted_winner_id, winners_expected_result, gameId);
+}
 
 function getTeamRow(team, opponent, eloCalculator) {
     const elo = eloCalculator.getTeamElo(team.id);
