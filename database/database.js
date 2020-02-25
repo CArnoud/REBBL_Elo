@@ -189,6 +189,10 @@ class Database {
     async getPredictionFromGame(gameFromDb) {
         return await this.connection.models.prediction.findAll({ where: { matchId: gameFromDb.id }, raw: true });
     }
+
+    async getRaceFromId(raceId) {
+        return (await this.connection.models.race.findAll({ where: { id: raceId }, raw: true }))[0];
+    }
 }
 
 exports.Database = Database;

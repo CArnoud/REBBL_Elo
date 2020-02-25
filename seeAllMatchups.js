@@ -36,11 +36,17 @@ database.getCompetitionsFromSeason(seasonId).then(async (competitions) => {
 
             if (!teams[0].name.toLowerCase().includes('admin') &&
                 !teams[1].name.toLowerCase().includes('admin')) {
+                const race0 = await database.getRaceFromId(teams[0].raceId);
+                const race1 = await database.getRaceFromId(teams[1].raceId);
+
                 if (j > 0) {
                     table.push({});
                 }
-                table.push(getTeamRow(teams[0], teams[1], eloCalculator, database));
-                table.push(getTeamRow(teams[1], teams[0], eloCalculator, database));
+
+
+
+                table.push(getTeamRow(teams[0], teams[1], eloCalculator, race0.name));
+                table.push(getTeamRow(teams[1], teams[0], eloCalculator, race1.name));
 
                 await savePrediction(database, games[j].id, teams[0].id, teams[1].id, eloCalculator);
             }
@@ -85,7 +91,7 @@ async function savePrediction(database, gameId, home_team_id, away_team_id, eloC
     await database.insertPrediction(home_elo, away_elo, predicted_winner_id, winners_expected_result, gameId);
 }
 
-function getTeamRow(team, opponent, eloCalculator) {
+function getTeamRow(team, opponent, eloCalculator, raceString) {
     const elo = eloCalculator.getTeamElo(team.id);
     const oppElo = eloCalculator.getTeamElo(opponent.id);
 
@@ -94,7 +100,7 @@ function getTeamRow(team, opponent, eloCalculator) {
 
     return {
         Team: "<a href=\"https://rebbl.net/rebbl/team/" + team.rebbl_id + "\">" + team.name + "</a>",
-        Race: team.raceId, // TODO translate
+        Race: raceString,
         // TV: team.tv.toString(), // TODO
         "Elo Rating": Math.round(elo),
         // "Race Matchup (REL and GMAN history)": getRaceMatchupString([team, opponent]), // TODO
