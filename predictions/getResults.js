@@ -24,6 +24,14 @@ let predictionScore = 0;
 // Result
 let html = "";
 const table = [];
+const overallResults = {
+    league: 'Total',
+    total: 0,
+    played: 0,
+    correct: 0,
+    drawn: 0
+};
+let index = 0;
 
 // Load Elo
 seasonIds.forEach(async (seasonId) => {
@@ -41,7 +49,7 @@ seasonIds.forEach(async (seasonId) => {
 
         for (let j in games) {
             totalGames++;
-            results.total++;
+            results.total++;    
             let winnerId = null;
             let correct = false;
 
@@ -83,15 +91,27 @@ seasonIds.forEach(async (seasonId) => {
         ', prediction score: ' + predictionScore
     );
 
+    overallResults.total = overallResults.total + results.total;
+    overallResults.played = overallResults.played + results.played;
+    overallResults.correct = overallResults.correct + results.correct;
+    overallResults.drawn = overallResults.drawn + results.drawn;
+    index++;
+
     table.push(getLeagueResultsRow(results));
-    html = addHtmlStyle(tableify(table));
-    fileHelper.writeFile(config.FILE.weekReviewFilePath, html);
+
+    if (index === seasonIds.length) {
+        table.push(getLeagueResultsRow(overallResults));
+        html = addHtmlStyle(tableify(table));
+        fileHelper.writeFile(config.FILE.weekReviewFilePath, html);
+        database.end();
+    }
 });
 
 function getLeagueResultsRow(results) {
     return {
         League: results.league,
         Round: round,
+        'Games': results.total,
         'Games Played': results.played,
         'Correct Picks': results.correct,
         'Draws': results.drawn,
