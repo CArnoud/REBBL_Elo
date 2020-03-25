@@ -27,7 +27,7 @@ class Predictor {
         return this.predictWinner(game) === game.getWinnerId();
     }
 
-    predictSeason(season) {
+    async predictSeason(season, database) {
         const games = season.getGames();
         let correct = 0;
 
@@ -38,7 +38,7 @@ class Predictor {
                 correct++;
             }
 
-            this.eloCalculator.update(game);
+            await this.eloCalculator.update(game, database);
         }
 
         return correct;

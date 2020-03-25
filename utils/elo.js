@@ -76,6 +76,16 @@ class Elo {
             this.elo[team1Id] = this.getUpdatedElo(team1Elo, e1, team1Result);
             this.elo[team2Id] = this.getUpdatedElo(team2Elo, e2, team2Result);
 
+            // console.log(team1Id + ' <- ' + this.elo[team1Id].toFixed(0) + ', ' + e1.toFixed(2));
+            // console.log(team2Id + ' <- ' + this.elo[team2Id].toFixed(0) + ', ' + e2.toFixed(2) + '\n');
+
+            // if (e1 > 0.8 || e2 > 0.8) {
+            //     console.log('panic at the disco ' + e1.toFixed(2) + ' ' + e2.toFixed(2) + ' = ' + team1Elo.toFixed(0) + ' vs ' + team2Elo.toFixed(0));
+            //     console.log(this.norm + ' ' + this.stretchingFactor + ' ' + this.maxChange);
+            //     console.log(team1Id + ' <- ' + this.elo[team1Id].toFixed(0) + ', ' + e1.toFixed(2));
+            //     console.log(team2Id + ' <- ' + this.elo[team2Id].toFixed(0) + ', ' + e2.toFixed(2) + '\n');
+            // }
+
             if (this.elo[team1Id] < 0) {
                 console.log(team1Id + ' negative Elo! ' + JSON.stringify(game.getTeam(0)));
             }
@@ -83,16 +93,8 @@ class Elo {
             if (this.elo[team2RebblId] < 0) {
                 console.log(team2Id + ' negative Elo! ' + JSON.stringify(game.getTeam(1)));
             }
-
-            // if (database) {
-            //     const dbTeam1 = await database.getTeamByRebblId(game.getTeam(0).id);
-            //     const dbTeam2 = await database.getTeamByRebblId(game.getTeam(1).id);
-            //     const dbGame = await database.getMatchByRebblId(game.match_id);
-            //     await database.insertElo(dbTeam1[0].get('id'), dbGame[0].get('id'), this.elo[team1RebblId], team1Elo, e1, team1Result);
-            //     await database.insertElo(dbTeam2[0].get('id'), dbGame[0].get('id'), this.elo[team2RebblId], team2Elo, e2, team2Result);
-            // }
         } else {
-            console.log('Atempt to update Elo but game has not been played ' + JSON.stringify(game));
+            // console.log('Atempt to update Elo but game has not been played ' + JSON.stringify(game));
         }
     }
 
@@ -112,6 +114,7 @@ class Elo {
 
     async saveAllRatings(database) {
         Object.keys(this.elo).forEach(async (key) => {
+            console.log(key + ' <- ' + this.elo[key]);
             await database.insertCurrentElo(key, this.elo[key]);
         });
     }

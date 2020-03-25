@@ -124,7 +124,7 @@ class Database {
         await this.insertTeam(gameObj.teams[1]);
 
         const [row, created] = await this.connection.models.match.findOrCreate({ where: { round: model.round, competitionId: competitionId, home_team_id: model.home_team_id }, defaults: model });
-        if (!created && row.match_id != model.match_id) {
+        if (!created && row.match_id != model.match_id && row.home_team_id == model.home_team_id && row.away_team_id == model.away_team_id) {
             await this.connection.models.match.update(model, { where: { id: row.id } });
         }
     }

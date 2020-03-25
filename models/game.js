@@ -81,12 +81,17 @@ class Game {
     }
 
     static isGameValid(matchObj) {
-        const teamName1 = matchObj.opponents[0].team.name.toLowerCase();
-        const teamName2 = matchObj.opponents[1].team.name.toLowerCase();
-        return !teamName1.includes('admin') &&
-            !teamName2.includes('admin') &&
-            !teamName1.includes('bye week') && 
-            !teamName2.includes('bye week');
+        if (matchObj.opponents) {
+            const teamName1 = matchObj.opponents[0].team.name.toLowerCase();
+            const teamName2 = matchObj.opponents[1].team.name.toLowerCase();
+            return !teamName1.includes('admin') &&
+                !teamName2.includes('admin') &&
+                !teamName1.includes('bye week') && 
+                !teamName2.includes('bye week');
+        }
+        else {
+            return false;
+        }
     }
 }
 

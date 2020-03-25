@@ -6,22 +6,18 @@ const database = new Database();
 database.connect();
 
 
-const numberOfSeasonsToLoad = 1 * 3;
-const numberOfSeasonsToSimulate = 11 * 3;
-
-
 // get elo for all parameter sets
 const parameterSets = [{
     norm: 1000,
     stretchingFactor: 2000,
     maxChange: 100,
     name: 'config'
-}, {
+}, /*{
     norm: 1000,
     stretchingFactor: 2 * Math.sqrt(46),
     maxChange: 100,
     name: 'fancy stretching'
-}, {
+},*/ {
     norm: 1500,
     stretchingFactor: 400,
     maxChange: 40,
@@ -59,9 +55,10 @@ database.getSeasons().then(async (seasonsFromDb) => {
     
     for (m in parameterSets) {
         eloCalculators.push(new Elo(parameterSets[m].norm, parameterSets[m].stretchingFactor, parameterSets[m].maxChange, {}));
-        for (let i = 0; i < seasonsFromDb.length && i < numberOfSeasonsToLoad; i++) {
-            eloCalculators[m].updateFullSeason(seasons[i]);
-        }
+        // await eloCalculators[m].updateFullSeason(seasons[0], database);
+    //     for (let i = 0; i < seasonsFromDb.length && i < numberOfSeasonsToLoad; i++) {
+    //         eloCalculators[m].updateFullSeason(seasons[i]);
+    //     }
     }
 
     // save all elo checkpoints
@@ -73,14 +70,17 @@ database.getSeasons().then(async (seasonsFromDb) => {
     for (let i in predictors) {
         const predictorResults = [];
 
-        for (let j = numberOfSeasonsToLoad; j < numberOfSeasonsToSimulate + numberOfSeasonsToLoad; j++) {
-            predictorResults.push(predictors[i].predictSeason(seasons[j]));
+        for (let j = 0; j < seasons.length; j++) {
+            const predictResults = await predictors[i].predictSeason(seasons[j], database);
+            predictorResults.push(predictResults);
 
             if (i === '0') {
                 gamesPredicted = gamesPredicted + seasons[j].getGames().length;
-            } 
+            }
         }
 
+        console.log('Charles ');
+        console.log(predictorResults);
         results.push(predictorResults);
     }
 

@@ -13,7 +13,7 @@ const seasonNames = {
     '16': 'BIGO',
     '27': 'GMAN'
 }
-const round = 7;
+const round = 10;
 
 let correctPicks = 0;
 let totalGames = 0;
@@ -110,7 +110,7 @@ seasonIds.forEach(async (seasonId) => {
 function getLeagueResultsRow(results) {
     return {
         League: results.league,
-        Round: round,
+        // Round: round,
         'Games': results.total,
         'Games Played': results.played,
         'Correct Picks': results.correct,
@@ -128,7 +128,7 @@ function addHtmlStyle(html) {
 }
 
 function getPostIntroductionText() {
-    return '<p>For a review from the previous week, please read this post.</p>';
+    return '<h2></h2><p></p>';
 }
 
 function getHtmlFileBeggining() {

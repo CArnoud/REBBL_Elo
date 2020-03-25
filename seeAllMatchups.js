@@ -10,10 +10,10 @@ const database = new Database();
 database.connect();
 
 
-const seasonId = 16; // 13(REL), 16 (BIGO), 27 (GMAN)
-const round = 7;
+const seasonId = 13; // 13(REL), 16 (BIGO), 27 (GMAN)
+const round = 11;
 
-const mainPostLink = 'https://news.rebbl.net/post/rebbl-elo-week-6-review-791';
+const mainPostLink = 'https://news.rebbl.net/post/rebbl-elo-week-10-review-836';
 
 
 // Result
